@@ -8,6 +8,7 @@ import 'package:giptv_flutter/domain/entities/entity_custom_link.dart';
 import 'package:giptv_flutter/domain/entities/entity_fav_channel.dart';
 import 'package:giptv_flutter/domain/entities/entity_radio_station.dart';
 import 'package:giptv_flutter/domain/entities/entity_user.dart';
+import 'package:giptv_flutter/domain/entities/entity_website.dart';
 import 'package:giptv_flutter/domain/repositories_i/i_repository_api_interactions.dart';
 import 'package:http/http.dart';
 
@@ -251,6 +252,30 @@ class ImplRepositoryGiptvApiInteractions implements IRepositoryApiInteractions {
         ),
       );
     }
+
+    return output;
+  }
+
+  @override
+  Future<EntityWebsite> getWebsite() async {
+    Request request = Request(
+      "GET",
+      Uri(
+        scheme: "https",
+        host: "giptv.ro",
+        path: "admin/api/config/getSiteWebLink.php",
+      ),
+    );
+
+    Response response = await Response.fromStream(await request.send());
+
+    Map resMap = jsonDecode(response.body)["WebSite"].first;
+
+    EntityWebsite output = EntityWebsite(
+      content: resMap["content"],
+      visible: resMap["visible"],
+      name: resMap["name"],
+    );
 
     return output;
   }

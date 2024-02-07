@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:flutter/services.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:giptv_flutter/app/dashboard/cubit/cubit_dashboard.dart';
 import 'package:giptv_flutter/app/screens/main/cubit/cubit_main.dart';
@@ -46,6 +43,7 @@ class ScreenMain extends StatelessWidget {
             (_) async {
               bloc.setUser(user);
               await bloc.getCategories(providerApi);
+              await bloc.getWebsite(providerApi);
               await bloc.getRadioStations(providerApi, user.code ?? "");
               await bloc.getFavorites(providerApi, user.idSerial ?? "");
             },
@@ -97,12 +95,15 @@ class ScreenMain extends StatelessWidget {
                           isActive: state.stage == StagesScreenMain.settings,
                           callback: bloc.goToSettingsStage,
                         ),
-                        MenuItem(
-                          icon: Icons.info,
-                          label: 'About',
-                          isActive: state.stage == StagesScreenMain.about,
-                          callback: bloc.goToAboutStage,
-                        ),
+                        if (state.websiteUrl.visible == "1")
+                          MenuItem(
+                            icon: Icons.public,
+                            label: state.websiteUrl.content,
+                            isActive: state.stage == StagesScreenMain.about,
+                            callback: () {
+                              launchUrl(Uri.parse(state.websiteUrl.name));
+                            },
+                          ),
                       ],
                     );
 

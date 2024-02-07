@@ -4,6 +4,7 @@ import 'package:giptv_flutter/domain/entities/entity_channel.dart';
 import 'package:giptv_flutter/domain/entities/entity_fav_channel.dart';
 import 'package:giptv_flutter/domain/entities/entity_radio_station.dart';
 import 'package:giptv_flutter/domain/entities/entity_user.dart';
+import 'package:giptv_flutter/domain/entities/entity_website.dart';
 
 enum StagesScreenMain {
   liveTv,
@@ -37,6 +38,11 @@ class StateMain extends Equatable {
     this.radioStations = const [],
     this.favorites = const [],
     this.videoUrl = "",
+    this.websiteUrl = const EntityWebsite(
+      content: "",
+      visible: "0",
+      name: "",
+    ),
     this.selectedChannel = -1,
   });
 
@@ -48,6 +54,7 @@ class StateMain extends Equatable {
     List<EntityRadioStation>? radioStations,
     List<EntityFavChannel>? favorites,
     String? videoUrl,
+    EntityWebsite? websiteUrl,
     int? selectedChannel,
   }) {
     return StateMain(
@@ -58,6 +65,7 @@ class StateMain extends Equatable {
       radioStations: radioStations ?? this.radioStations,
       favorites: favorites ?? this.favorites,
       videoUrl: videoUrl ?? this.videoUrl,
+      websiteUrl: websiteUrl ?? this.websiteUrl,
       selectedChannel: selectedChannel ?? this.selectedChannel,
     );
   }
@@ -70,6 +78,7 @@ class StateMain extends Equatable {
   final List<EntityRadioStation> radioStations;
   final List<EntityFavChannel> favorites;
   final String videoUrl;
+  final EntityWebsite websiteUrl;
   final int selectedChannel;
 
   @override
@@ -89,6 +98,7 @@ class StateMain extends Equatable {
         favorites.length,
         favorites.hashCode,
         videoUrl,
+        websiteUrl,
         selectedChannel,
       ];
 }

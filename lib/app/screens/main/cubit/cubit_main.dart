@@ -22,6 +22,14 @@ class CubitMain extends Cubit<StateMain> {
     );
   }
 
+  Future getWebsite(ProviderApiInteractions provider) async {
+    emit(
+      state.copyWith(
+        websiteUrl: await provider.getWebsite(),
+      ),
+    );
+  }
+
   Future getChannels(
     ProviderApiInteractions provider,
     String categoryId,

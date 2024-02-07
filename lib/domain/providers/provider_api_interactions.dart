@@ -3,6 +3,7 @@ import 'package:giptv_flutter/domain/entities/entity_channel.dart';
 import 'package:giptv_flutter/domain/entities/entity_fav_channel.dart';
 import 'package:giptv_flutter/domain/entities/entity_radio_station.dart';
 import 'package:giptv_flutter/domain/entities/entity_user.dart';
+import 'package:giptv_flutter/domain/entities/entity_website.dart';
 import 'package:giptv_flutter/domain/repositories_i/i_repository_api_interactions.dart';
 
 class ProviderApiInteractions {
@@ -34,6 +35,8 @@ class ProviderApiInteractions {
   Future<EntityUser> login(String code) => _repository.login(code);
 
   Future<List<EntityCategory>> getCategories() => _repository.getCategories();
+
+  Future<EntityWebsite> getWebsite() => _repository.getWebsite();
 
   Future<List<EntityChannel>> getChannelsByCategory(String categoryId) =>
       _repository.getChannelsByCategory(categoryId);

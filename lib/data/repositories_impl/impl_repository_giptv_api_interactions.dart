@@ -243,6 +243,8 @@ class ImplRepositoryGiptvApiInteractions implements IRepositoryApiInteractions {
 
     Iterable categories = jsonDecode(response.body);
 
+    print(response.body);
+
     for (Map categoryMap in categories) {
       output.add(
         EntityCategory(

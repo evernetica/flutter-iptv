@@ -13,6 +13,7 @@ import 'package:giptv_flutter/domain/entities/entity_radio_station.dart';
 import 'package:giptv_flutter/domain/entities/entity_user.dart';
 import 'package:giptv_flutter/domain/providers/provider_api_interactions.dart';
 import 'package:giptv_flutter/misc/app_colors.dart';
+import 'package:giptv_flutter/misc/app_strings.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -214,73 +215,89 @@ class _DemoFavoritesWrapState extends State<DemoFavoritesWrap> {
             runSpacing: 16.0,
             children: List.generate(
               widget.favorites.length,
-              (i) => InkWell(
-                borderRadius: const BorderRadius.all(Radius.circular(8.0)),
-                overlayColor: MaterialStateColor.resolveWith(
-                  (_) => AppColors.fgMain,
-                ),
-                onTap: () {
-                  Provider.of<CubitDashboard>(
-                    context,
-                    listen: false,
-                  ).openVideoPage(
-                    videoUrl: widget.favorites[i].linkChannel,
-                    idSerial: "${widget.user.idSerial}",
-                    title: widget.favorites[i].titleChannel,
-                    channelId: widget.favorites[i].channelId,
-                    isFavourite: true,
-                  );
-                },
-                child: SizedBox(
-                  width: 120,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          //color: Colors.white12,
-                          borderRadius: const BorderRadius.all(
-                            Radius.circular(8.0),
+              (i) {
+                bool isForbidden = (widget.user.isParentalControlActive == "1")
+                    ? AppStrings.adultKeywords.any(
+                        (keyword) => widget.favorites[i].titleChannel
+                            .toLowerCase()
+                            .contains(
+                              keyword,
+                            ),
+                      )
+                    : false;
+
+                return InkWell(
+                  borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+                  overlayColor: MaterialStateColor.resolveWith(
+                    (_) => AppColors.fgMain,
+                  ),
+                  onTap: () {
+                    if (isForbidden) return;
+
+                    Provider.of<CubitDashboard>(
+                      context,
+                      listen: false,
+                    ).openVideoPage(
+                      videoUrl: widget.favorites[i].linkChannel,
+                      idSerial: "${widget.user.idSerial}",
+                      title: widget.favorites[i].titleChannel,
+                      channelId: widget.favorites[i].channelId,
+                      isFavourite: true,
+                    );
+                  },
+                  child: SizedBox(
+                    width: 120,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            //color: Colors.white12,
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(8.0),
+                            ),
+                            border: Border.all(
+                              color: AppColors.bgMainLighter20,
+                            ),
                           ),
-                          border: Border.all(
-                            color: AppColors.bgMainLighter20,
-                          ),
-                        ),
-                        height: 90,
-                        child: Center(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Image.asset(
-                              'assets/images/radio_logo.png',
+                          height: 90,
+                          child: Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Image.asset(
+                                'assets/images/radio_logo.png',
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      Flexible(
-                        child: AspectRatio(
-                          aspectRatio: 3,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Center(
-                              child: Text(
-                                widget.favorites[i].titleChannel,
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 10.0,
-                                  overflow: TextOverflow.ellipsis,
+                        Flexible(
+                          child: AspectRatio(
+                            aspectRatio: 3,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Center(
+                                child: Text(
+                                  isForbidden
+                                      ? "This Channel Content is Protected"
+                                      : widget.favorites[i].titleChannel,
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 10.0,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
                                 ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              ),
+                );
+              },
             ),
           ),
         ),
@@ -1333,12 +1350,24 @@ class _DemoChannelsWrapState extends State<DemoChannelsWrap> {
               children: List.generate(
                 widget.channels.length,
                 (i) {
+                  bool isForbidden = (widget.user.isParentalControlActive ==
+                          "1")
+                      ? AppStrings.adultKeywords.any(
+                          (keyword) =>
+                              widget.channels[i].name.toLowerCase().contains(
+                                    keyword,
+                                  ),
+                        )
+                      : false;
+
                   return InkWell(
                     borderRadius: const BorderRadius.all(Radius.circular(8.0)),
                     overlayColor: MaterialStateColor.resolveWith(
                       (_) => AppColors.fgMain,
                     ),
                     onTap: () {
+                      if (isForbidden) return;
+
                       Provider.of<CubitDashboard>(
                         context,
                         listen: false,
@@ -1390,7 +1419,9 @@ class _DemoChannelsWrapState extends State<DemoChannelsWrap> {
                                 padding: const EdgeInsets.all(8.0),
                                 child: Center(
                                   child: Text(
-                                    widget.channels[i].name,
+                                    isForbidden
+                                        ? "This Channel is Protected"
+                                        : widget.channels[i].name,
                                     textAlign: TextAlign.center,
                                     style: const TextStyle(
                                       color: Colors.white,
@@ -1419,48 +1450,65 @@ class _DemoChannelsWrapState extends State<DemoChannelsWrap> {
       return ListView(
         children: List.generate(
           widget.categories.length,
-          (i) => Padding(
-            padding: const EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0),
-            child: InkWell(
-              borderRadius: const BorderRadius.all(Radius.circular(8.0)),
-              overlayColor: MaterialStateColor.resolveWith(
-                (_) => AppColors.fgMain,
-              ),
-              onTap: () async {
-                setState(() {
-                  isLoadingChannels = true;
-                });
-
-                await widget.categoryCallback(widget.categories[i].categoryId);
-
-                setState(() {
-                  isLoadingChannels = false;
-                });
-              },
-              child: Container(
-                decoration: BoxDecoration(
-                  //color: Colors.white12,
-                  border: Border.all(color: AppColors.bgMainLighter20),
-                  borderRadius: const BorderRadius.all(Radius.circular(8.0)),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Text(
-                        widget.categories[i].categoryName,
-                        style: const TextStyle(
-                          color: Colors.white,
+          (i) {
+            bool isForbidden = (widget.user.isParentalControlActive == "1")
+                ? AppStrings.adultKeywords.any(
+                    (keyword) => widget.categories[i].categoryName
+                        .toLowerCase()
+                        .contains(
+                          keyword,
                         ),
-                      ),
-                    ],
+                  )
+                : false;
+
+            return Padding(
+              padding: const EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0),
+              child: InkWell(
+                borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+                overlayColor: MaterialStateColor.resolveWith(
+                  (_) => AppColors.fgMain,
+                ),
+                onTap: () async {
+                  if (isForbidden) return;
+
+                  setState(() {
+                    isLoadingChannels = true;
+                  });
+
+                  await widget
+                      .categoryCallback(widget.categories[i].categoryId);
+
+                  setState(() {
+                    isLoadingChannels = false;
+                  });
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    //color: Colors.white12,
+                    border: Border.all(color: AppColors.bgMainLighter20),
+                    borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Text(
+                          isForbidden
+                              ? "This Category Content is Protected"
+                              : widget.categories[i].categoryName,
+                          style: const TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          ),
+            );
+          },
         ),
       );
     }

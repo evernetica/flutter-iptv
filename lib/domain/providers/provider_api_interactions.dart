@@ -65,4 +65,28 @@ class ProviderApiInteractions {
         link,
         channelId,
       );
+
+  Future<bool?> setTrueToParentalControl(
+    String code,
+  ) =>
+      _repository.setTrueToParentalControl(code);
+
+  Future<bool?> setFalseToParentalControl(
+    String code,
+  ) =>
+      _repository.setFalseToParentalControl(code);
+
+  Future<bool?> removeAccount(
+    String code,
+  ) =>
+      _repository.removeAccount(code);
+
+  Future<bool?> sendSupport(
+    String idSerial,
+    String text,
+  ) =>
+      _repository.sendSupport(
+        idSerial,
+        text,
+      );
 }

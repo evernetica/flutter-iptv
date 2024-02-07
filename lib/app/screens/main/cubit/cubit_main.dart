@@ -1,5 +1,6 @@
 import 'package:giptv_flutter/app/screens/main/cubit/state_main.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:giptv_flutter/domain/entities/entity_user.dart';
 import 'package:giptv_flutter/domain/providers/provider_api_interactions.dart';
 
 class CubitMain extends Cubit<StateMain> {
@@ -50,6 +51,10 @@ class CubitMain extends Cubit<StateMain> {
 
   void setUrl(String url) {
     emit(state.copyWith(videoUrl: url));
+  }
+
+  void setUser(EntityUser user) {
+    emit(state.copyWith(user: user));
   }
 
   void selectChannel(int index) {

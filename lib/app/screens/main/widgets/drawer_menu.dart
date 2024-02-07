@@ -95,7 +95,10 @@ class DrawerMenu extends Drawer {
               (index) => Column(
                 children: [
                   InkWell(
-                    onTap: () => menuItems[index].callback(),
+                    onTap: () {
+                      Scaffold.of(context).closeDrawer();
+                      menuItems[index].callback();
+                    },
                     overlayColor: MaterialStateColor.resolveWith(
                       (_) => AppColors.bgMainLighter40,
                     ),

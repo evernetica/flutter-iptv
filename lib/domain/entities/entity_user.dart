@@ -1,5 +1,5 @@
 class EntityUser {
-  EntityUser({
+  const EntityUser({
     required this.code,
     required this.deviceId,
     required this.email,
@@ -16,18 +16,18 @@ class EntityUser {
     required this.passParentalControl,
   });
 
-  String? code;
-  String? deviceId;
-  String? email;
-  String? fullName;
-  String? ip;
-  String? registered;
-  String? idSerial;
-  String? purchase;
-  String? trialStartTime;
-  String? trialFinishTime;
-  String? deviceId2;
-  String? deviceId3;
-  String? isParentalControlActive;
-  String? passParentalControl;
+  final String? code;
+  final String? deviceId;
+  final String? email;
+  final String? fullName;
+  final String? ip;
+  final String? registered;
+  final String? idSerial;
+  final String? purchase;
+  final String? trialStartTime;
+  final String? trialFinishTime;
+  final String? deviceId2;
+  final String? deviceId3;
+  final String? isParentalControlActive;
+  final String? passParentalControl;
 }

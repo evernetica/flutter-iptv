@@ -3,6 +3,7 @@ import 'package:giptv_flutter/domain/entities/entity_category.dart';
 import 'package:giptv_flutter/domain/entities/entity_channel.dart';
 import 'package:giptv_flutter/domain/entities/entity_fav_channel.dart';
 import 'package:giptv_flutter/domain/entities/entity_radio_station.dart';
+import 'package:giptv_flutter/domain/entities/entity_user.dart';
 
 enum StagesScreenMain {
   liveTv,
@@ -15,6 +16,22 @@ enum StagesScreenMain {
 class StateMain extends Equatable {
   const StateMain({
     this.stage = StagesScreenMain.liveTv,
+    this.user = const EntityUser(
+      code: "",
+      deviceId: "",
+      email: "",
+      fullName: "",
+      ip: "",
+      registered: "",
+      idSerial: "",
+      purchase: "",
+      trialStartTime: "",
+      trialFinishTime: "",
+      deviceId2: "",
+      deviceId3: "",
+      isParentalControlActive: "",
+      passParentalControl: "",
+    ),
     this.channels = const [],
     this.categories = const [],
     this.radioStations = const [],
@@ -25,6 +42,7 @@ class StateMain extends Equatable {
 
   StateMain copyWith({
     StagesScreenMain? stage,
+    EntityUser? user,
     List<EntityChannel>? channels,
     List<EntityCategory>? categories,
     List<EntityRadioStation>? radioStations,
@@ -34,6 +52,7 @@ class StateMain extends Equatable {
   }) {
     return StateMain(
       stage: stage ?? this.stage,
+      user: user ?? this.user,
       channels: channels ?? this.channels,
       categories: categories ?? this.categories,
       radioStations: radioStations ?? this.radioStations,
@@ -45,6 +64,7 @@ class StateMain extends Equatable {
 
   final StagesScreenMain stage;
 
+  final EntityUser user;
   final List<EntityChannel> channels;
   final List<EntityCategory> categories;
   final List<EntityRadioStation> radioStations;
@@ -55,6 +75,7 @@ class StateMain extends Equatable {
   @override
   List<Object?> get props => [
         stage,
+        user,
         channels,
         channels.length,
         channels.hashCode,

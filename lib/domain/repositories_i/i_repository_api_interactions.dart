@@ -37,4 +37,21 @@ abstract class IRepositoryApiInteractions {
     String link,
     String channelId,
   );
+
+  Future<bool?> setTrueToParentalControl(
+    String code,
+  );
+
+  Future<bool?> setFalseToParentalControl(
+    String code,
+  );
+
+  Future<bool?> removeAccount(
+    String code,
+  );
+
+  Future<bool?> sendSupport(
+    String idSerial,
+    String text,
+  );
 }

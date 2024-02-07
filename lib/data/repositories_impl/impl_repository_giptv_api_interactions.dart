@@ -442,4 +442,140 @@ class ImplRepositoryGiptvApiInteractions implements IRepositoryApiInteractions {
     print("response addFav :: ${response.body}");
     return;
   }
+
+  @override
+  Future<bool?> setTrueToParentalControl(
+    String code,
+  ) async {
+    print("set true");
+
+    Request request = Request(
+      "POST",
+      Uri(
+        scheme: "https",
+        host: "giptv.ro",
+        path: "admin/api/serials/setTrueToParentalControl.php",
+      ),
+    );
+
+    request.headers.addAll(
+      {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    );
+
+    request.bodyFields = {'code': code};
+
+    Response response = await Response.fromStream(await request.send());
+
+    print(response.body);
+
+    if (jsonDecode(response.body)["status"] == 1) return true;
+
+    return false;
+  }
+
+  @override
+  Future<bool?> setFalseToParentalControl(
+    String code,
+  ) async {
+    print("set false");
+    Request request = Request(
+      "POST",
+      Uri(
+        scheme: "https",
+        host: "giptv.ro",
+        path: "admin/api/serials/setFalseToParentalControl.php",
+      ),
+    );
+
+    request.headers.addAll(
+      {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    );
+
+    request.bodyFields = {'code': code};
+
+    Response response = await Response.fromStream(await request.send());
+
+    print(response.body);
+
+    if (jsonDecode(response.body)["status"] == 1) return true;
+
+    return false;
+  }
+
+  @override
+  Future<bool?> removeAccount(
+    String code,
+  ) async {
+    Request request = Request(
+      "GET",
+      Uri(
+        scheme: "https",
+        host: "giptv.ro",
+        path: "admin/api/serials/removeAccount.php",
+        queryParameters: {
+          "code": code,
+        },
+      ),
+    );
+
+    request.headers.addAll(
+      {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    );
+
+    Response response = await Response.fromStream(await request.send());
+
+    if (jsonDecode(response.body)["status"] == 1) return true;
+
+    return false;
+  }
+
+  @override
+  Future<bool?> sendSupport(
+    String idSerial,
+    String text,
+  ) async {
+    print("send message $idSerial");
+    print(text);
+
+    Request request = Request(
+      "POST",
+      Uri(
+        scheme: "https",
+        host: "giptv.ro",
+        path: "admin/api/support/sendSupport.php",
+      ),
+    );
+
+    request.headers.addAll(
+      {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    );
+
+    request.bodyFields = {
+      'IdSerial': idSerial,
+      'text': text,
+    };
+
+    Response response = await Response.fromStream(await request.send());
+
+    print(response.body);
+
+    return true;
+  }
 }
+
+/*
+
+    @FormUrlEncoded
+    @POST("support/sendSupport.php")
+    Call<ResponsePHP> sendSupport(@Header("Content-Type") String str, @Field("IdSerial") String IdSerial
+            ,@Field("text") String text);
+
+*/

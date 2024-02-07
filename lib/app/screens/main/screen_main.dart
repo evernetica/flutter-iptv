@@ -1,3 +1,7 @@
+import 'dart:io';
+
+import 'package:flutter/services.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:giptv_flutter/app/dashboard/cubit/cubit_dashboard.dart';
 import 'package:giptv_flutter/app/screens/main/cubit/cubit_main.dart';
 import 'package:giptv_flutter/app/screens/main/cubit/state_main.dart';
@@ -12,8 +16,11 @@ import 'package:giptv_flutter/domain/entities/entity_radio_station.dart';
 import 'package:giptv_flutter/domain/entities/entity_user.dart';
 import 'package:giptv_flutter/domain/providers/provider_api_interactions.dart';
 import 'package:giptv_flutter/misc/app_colors.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ScreenMain extends StatelessWidget {
   const ScreenMain({
@@ -25,8 +32,10 @@ class ScreenMain extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ProviderApiInteractions providerApi =
-        Provider.of<ProviderApiInteractions>(context);
+    ProviderApiInteractions providerApi = Provider.of<ProviderApiInteractions>(
+      context,
+      listen: false,
+    );
 
     return BlocProvider(
       create: (_) => CubitMain(),
@@ -35,6 +44,7 @@ class ScreenMain extends StatelessWidget {
           CubitMain bloc = BlocProvider.of<CubitMain>(context);
           WidgetsBinding.instance.addPostFrameCallback(
             (_) async {
+              bloc.setUser(user);
               await bloc.getCategories(providerApi);
               await bloc.getRadioStations(providerApi, user.code ?? "");
               await bloc.getFavorites(providerApi, user.idSerial ?? "");
@@ -58,7 +68,7 @@ class ScreenMain extends StatelessWidget {
                     }
 
                     Drawer drawer = DrawerMenu(
-                      user: user,
+                      user: state.user,
                       menuItems: [
                         MenuItem(
                           icon: Icons.live_tv_outlined,
@@ -73,19 +83,19 @@ class ScreenMain extends StatelessWidget {
                           callback: bloc.goToRadioStage,
                         ),
                         MenuItem(
-                          icon: Icons.settings,
-                          label: 'Settings',
-                          isActive: state.stage == StagesScreenMain.settings,
-                          callback: bloc.goToSettingsStage,
-                        ),
-                        MenuItem(
                           icon: Icons.favorite,
                           label: 'Favorites',
                           isActive: state.stage == StagesScreenMain.favorites,
                           callback: () => bloc.goToFavoritesStage(
                             providerApi,
-                            "${user.idSerial}",
+                            "${state.user.idSerial}",
                           ),
+                        ),
+                        MenuItem(
+                          icon: Icons.settings,
+                          label: 'Settings',
+                          isActive: state.stage == StagesScreenMain.settings,
+                          callback: bloc.goToSettingsStage,
                         ),
                         MenuItem(
                           icon: Icons.info,
@@ -130,7 +140,7 @@ class ScreenMain extends StatelessWidget {
                                           catId,
                                         ),
                                         favChannels: state.favorites,
-                                        user: user,
+                                        user: state.user,
                                         back: bloc.clearChannels,
                                       );
                                     case StagesScreenMain.radio:
@@ -140,7 +150,12 @@ class ScreenMain extends StatelessWidget {
                                     case StagesScreenMain.favorites:
                                       return DemoFavoritesWrap(
                                         favorites: state.favorites,
-                                        user: user,
+                                        user: state.user,
+                                      );
+                                    case StagesScreenMain.settings:
+                                      return DemoSettingsList(
+                                        user: state.user,
+                                        bloc: bloc,
                                       );
                                     default:
                                       return const Center(
@@ -369,6 +384,759 @@ class _DemoRadioWrapState extends State<DemoRadioWrap> {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class DemoSettingsList extends StatelessWidget {
+  const DemoSettingsList({
+    super.key,
+    required this.user,
+    required this.bloc,
+  });
+
+  final EntityUser user;
+  final CubitMain bloc;
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _buildGroupTitle(
+              label: "Application",
+              icon: Icons.android,
+            ),
+            _settingsButton(
+              title: "${user.isParentalControlActive == "1" ? "Dis" : "En"}"
+                  "able the parental control",
+              icon: Icons.wc,
+              onTap: () async {
+                if (user.isParentalControlActive == "0") {
+                  bool? result = await Provider.of<ProviderApiInteractions>(
+                    context,
+                    listen: false,
+                  ).setTrueToParentalControl(user.code ?? "");
+
+                  if (result != true) return;
+
+                  bloc.setUser(
+                    EntityUser(
+                      code: user.code,
+                      deviceId: user.deviceId,
+                      email: user.email,
+                      fullName: user.fullName,
+                      ip: user.ip,
+                      registered: user.registered,
+                      idSerial: user.idSerial,
+                      purchase: user.purchase,
+                      trialStartTime: user.trialStartTime,
+                      trialFinishTime: user.trialFinishTime,
+                      deviceId2: user.deviceId2,
+                      deviceId3: user.deviceId3,
+                      isParentalControlActive: "1",
+                      passParentalControl: user.passParentalControl,
+                    ),
+                  );
+                  return;
+                }
+
+                String warning = "";
+                TextEditingController controller = TextEditingController();
+
+                BuildContext navContext = context;
+
+                bool? result = await showDialog(
+                  context: context,
+                  builder: (context) {
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.of(
+                          context,
+                          rootNavigator: true,
+                        ).pop(false);
+                      },
+                      child: SafeArea(
+                        child: Scaffold(
+                          backgroundColor: Colors.transparent,
+                          body: StatefulBuilder(
+                            builder: (context, setState) {
+                              return DefaultTextStyle(
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                ),
+                                child: Center(
+                                  child: SingleChildScrollView(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(16.0),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(16.0),
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(16.0),
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              const Text(
+                                                "Disable the parental control",
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                                textAlign: TextAlign.center,
+                                              ),
+                                              const SizedBox(height: 16.0),
+                                              const Text(
+                                                "Put the password of the parental control"
+                                                " to disable it",
+                                                textAlign: TextAlign.center,
+                                              ),
+                                              const SizedBox(height: 8.0),
+                                              Text(
+                                                warning,
+                                                style: const TextStyle(
+                                                    color: Colors.red),
+                                              ),
+                                              const SizedBox(height: 8.0),
+                                              ConstrainedBox(
+                                                constraints:
+                                                    const BoxConstraints(
+                                                  minWidth: 200.0,
+                                                  maxWidth: 200.0,
+                                                ),
+                                                child: Material(
+                                                  child: TextField(
+                                                    controller: controller,
+                                                    keyboardType:
+                                                        TextInputType.number,
+                                                    textAlign: TextAlign.center,
+                                                    onChanged: (text) {
+                                                      if (warning.isNotEmpty) {
+                                                        setState(() {
+                                                          warning = "";
+                                                        });
+                                                      }
+                                                    },
+                                                    decoration:
+                                                        const InputDecoration(
+                                                      border:
+                                                          UnderlineInputBorder(),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              const SizedBox(height: 16.0),
+                                              Theme(
+                                                data: ThemeData(
+                                                  elevatedButtonTheme:
+                                                      ElevatedButtonThemeData(
+                                                    style: ButtonStyle(
+                                                      backgroundColor:
+                                                          MaterialStateColor
+                                                              .resolveWith(
+                                                        (_) => AppColors.fgMain,
+                                                      ),
+                                                      foregroundColor:
+                                                          MaterialStateColor
+                                                              .resolveWith(
+                                                        (_) => Colors.white,
+                                                      ),
+                                                      overlayColor:
+                                                          MaterialStateColor
+                                                              .resolveWith(
+                                                        (_) => Colors.white38,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                child: Row(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    ElevatedButton(
+                                                      onPressed: () {
+                                                        Navigator.of(
+                                                          context,
+                                                          rootNavigator: true,
+                                                        ).pop(false);
+                                                      },
+                                                      child:
+                                                          const Text("Cancel"),
+                                                    ),
+                                                    const SizedBox(width: 16.0),
+                                                    ElevatedButton(
+                                                      onPressed: () async {
+                                                        print("pressed");
+
+                                                        if (controller.text
+                                                                .trim() !=
+                                                            user.passParentalControl) {
+                                                          setState(() {
+                                                            warning =
+                                                                "Wrong pass code!";
+                                                          });
+                                                          return;
+                                                        }
+
+                                                        bool? result =
+                                                            await Provider.of<
+                                                                ProviderApiInteractions>(
+                                                          navContext,
+                                                          listen: false,
+                                                        ).setFalseToParentalControl(
+                                                          user.code ?? "",
+                                                        );
+
+                                                        if (result != true) {
+                                                          setState(() {
+                                                            warning =
+                                                                "Something went wrong!";
+                                                          });
+                                                        }
+
+                                                        if (context.mounted) {
+                                                          if (result == true) {
+                                                            bloc.setUser(
+                                                              EntityUser(
+                                                                code: user.code,
+                                                                deviceId: user
+                                                                    .deviceId,
+                                                                email:
+                                                                    user.email,
+                                                                fullName: user
+                                                                    .fullName,
+                                                                ip: user.ip,
+                                                                registered: user
+                                                                    .registered,
+                                                                idSerial: user
+                                                                    .idSerial,
+                                                                purchase: user
+                                                                    .purchase,
+                                                                trialStartTime:
+                                                                    user.trialStartTime,
+                                                                trialFinishTime:
+                                                                    user.trialFinishTime,
+                                                                deviceId2: user
+                                                                    .deviceId2,
+                                                                deviceId3: user
+                                                                    .deviceId3,
+                                                                isParentalControlActive:
+                                                                    "0",
+                                                                passParentalControl:
+                                                                    user.passParentalControl,
+                                                              ),
+                                                            );
+
+                                                            Navigator.of(
+                                                              context,
+                                                              rootNavigator:
+                                                                  true,
+                                                            ).pop(true);
+                                                          }
+                                                        }
+                                                      },
+                                                      child:
+                                                          const Text("Confirm"),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                );
+                print(result);
+              },
+            ),
+            _settingsButton(
+              title: "Rate Giptv",
+              icon: Icons.star_half,
+              onTap: () async {
+                PackageInfo packageInfo = await PackageInfo.fromPlatform();
+
+                launchUrl(
+                  Uri.parse(
+                    "market://details?id=${packageInfo.packageName}",
+                  ),
+                );
+              },
+            ),
+            _settingsButton(
+              title: "Share Giptv",
+              icon: Icons.screen_share,
+              onTap: () async {
+                PackageInfo packageInfo = await PackageInfo.fromPlatform();
+
+                Share.share(
+                  "I invite to download this app to watch best TV Live Channels "
+                  "(G-ip.tv) https://play.google.com/store/apps/details?id=${packageInfo.packageName}",
+                );
+              },
+            ),
+            _settingsButton(
+              title: "Clear Cache",
+              icon: Icons.delete_forever,
+              onTap: () async {
+                await DefaultCacheManager().emptyCache();
+              },
+            ),
+            _settingsButton(
+              title: "Logout",
+              icon: Icons.power_settings_new,
+              onTap: () {
+                BlocProvider.of<CubitDashboard>(context).openLoginPage();
+              },
+            ),
+            _settingsButton(
+              title: "Delete Account",
+              icon: Icons.sentiment_dissatisfied,
+              onTap: () async {
+                bool? result = await showDialog(
+                  context: context,
+                  builder: (context) {
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.of(
+                          context,
+                          rootNavigator: true,
+                        ).pop(false);
+                      },
+                      child: SafeArea(
+                        child: Scaffold(
+                          backgroundColor: Colors.transparent,
+                          body: DefaultTextStyle(
+                            style: const TextStyle(
+                              color: Colors.black,
+                            ),
+                            child: Center(
+                              child: SingleChildScrollView(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(16.0),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(16.0),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          const Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Icon(
+                                                Icons.sentiment_dissatisfied,
+                                              ),
+                                              SizedBox(width: 8.0),
+                                              Text(
+                                                "Alert",
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.red,
+                                                ),
+                                                textAlign: TextAlign.center,
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 16.0),
+                                          ConstrainedBox(
+                                            constraints: const BoxConstraints(
+                                              maxWidth: 300.0,
+                                            ),
+                                            child: const Text(
+                                              "if you click on yes, you will remove your account immediately from this application Giptv, and your information will removed, and you will can't log in again.",
+                                              textAlign: TextAlign.center,
+                                              softWrap: true,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 16.0),
+                                          Theme(
+                                            data: ThemeData(
+                                              elevatedButtonTheme:
+                                                  ElevatedButtonThemeData(
+                                                style: ButtonStyle(
+                                                  backgroundColor:
+                                                      MaterialStateColor
+                                                          .resolveWith(
+                                                    (_) => AppColors.fgMain,
+                                                  ),
+                                                  foregroundColor:
+                                                      MaterialStateColor
+                                                          .resolveWith(
+                                                    (_) => Colors.white,
+                                                  ),
+                                                  overlayColor:
+                                                      MaterialStateColor
+                                                          .resolveWith(
+                                                    (_) => Colors.white38,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                ElevatedButton(
+                                                  onPressed: () {
+                                                    Navigator.of(
+                                                      context,
+                                                      rootNavigator: true,
+                                                    ).pop(false);
+                                                  },
+                                                  child: const Text("Cancel"),
+                                                ),
+                                                const SizedBox(width: 16.0),
+                                                ElevatedButton(
+                                                  onPressed: () async {
+                                                    print("pressed");
+                                                    Navigator.of(
+                                                      context,
+                                                      rootNavigator: true,
+                                                    ).pop(true);
+                                                  },
+                                                  child: const Text("Yes"),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                );
+
+                if (result == true) {
+                  if (!context.mounted) return;
+
+                  bool? isAccountRemoved =
+                      await Provider.of<ProviderApiInteractions>(
+                    context,
+                    listen: false,
+                  ).removeAccount(
+                    user.code ?? "",
+                  );
+
+                  if (isAccountRemoved == true) {
+                    if (!context.mounted) return;
+
+                    BlocProvider.of<CubitDashboard>(context).openLoginPage();
+                  }
+                }
+              },
+            ),
+            _buildGroupTitle(
+              label: "Legal",
+              icon: Icons.folder_shared,
+            ),
+            _settingsButton(
+              title: "Privacy Policy",
+              icon: Icons.gavel,
+              onTap: () async {
+                String text = await DefaultAssetBundle.of(context).loadString(
+                  'assets/text/Privacy Policy',
+                );
+
+                if (!context.mounted) return;
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return Scaffold(
+                      backgroundColor: Colors.white,
+                      body: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: SingleChildScrollView(
+                          child: Text(
+                            text,
+                            style: const TextStyle(
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
+            _buildGroupTitle(
+              label: "Contact us",
+              icon: Icons.contact_mail,
+            ),
+            _settingsButton(
+              title: "Send a message to support",
+              icon: Icons.send,
+              onTap: () async {
+                TextEditingController controller = TextEditingController();
+                String text = "";
+                BuildContext navContext = context;
+
+                bool? result = await showDialog(
+                  context: context,
+                  builder: (context) {
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.of(
+                          context,
+                          rootNavigator: true,
+                        ).pop(false);
+                      },
+                      child: SafeArea(
+                        child: Scaffold(
+                          backgroundColor: Colors.transparent,
+                          body: DefaultTextStyle(
+                            style: const TextStyle(
+                              color: Colors.black,
+                            ),
+                            child: Center(
+                              child: SingleChildScrollView(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(16.0),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(16.0),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          const Text(
+                                            "Support",
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                          const SizedBox(height: 16.0),
+                                          const Text(
+                                            "Send us your message or contact on G-ip.tv",
+                                            textAlign: TextAlign.center,
+                                          ),
+                                          const SizedBox(height: 16.0),
+                                          ConstrainedBox(
+                                            constraints: const BoxConstraints(
+                                              minWidth: 200.0,
+                                            ),
+                                            child: Material(
+                                              child: TextField(
+                                                minLines: 10,
+                                                maxLines: 50,
+                                                controller: controller,
+                                                textAlign: TextAlign.start,
+                                                decoration:
+                                                    const InputDecoration(
+                                                  border:
+                                                      UnderlineInputBorder(),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(height: 16.0),
+                                          Theme(
+                                            data: ThemeData(
+                                              elevatedButtonTheme:
+                                                  ElevatedButtonThemeData(
+                                                style: ButtonStyle(
+                                                  backgroundColor:
+                                                      MaterialStateColor
+                                                          .resolveWith(
+                                                    (_) => AppColors.fgMain,
+                                                  ),
+                                                  foregroundColor:
+                                                      MaterialStateColor
+                                                          .resolveWith(
+                                                    (_) => Colors.white,
+                                                  ),
+                                                  overlayColor:
+                                                      MaterialStateColor
+                                                          .resolveWith(
+                                                    (_) => Colors.white38,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                ElevatedButton(
+                                                  onPressed: () {
+                                                    Navigator.of(
+                                                      context,
+                                                      rootNavigator: true,
+                                                    ).pop(false);
+                                                  },
+                                                  child: const Text("Cancel"),
+                                                ),
+                                                const SizedBox(width: 16.0),
+                                                ElevatedButton(
+                                                  onPressed: () {
+                                                    text = controller.text;
+
+                                                    Navigator.of(
+                                                      context,
+                                                      rootNavigator: true,
+                                                    ).pop(true);
+                                                  },
+                                                  child: const Text("Confirm"),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                );
+
+                if (result == true) {
+                  if (!navContext.mounted) return;
+
+                  Provider.of<ProviderApiInteractions>(
+                    navContext,
+                    listen: false,
+                  ).sendSupport(
+                    user.idSerial ?? "",
+                    text,
+                  );
+                }
+              },
+            ),
+            const SizedBox(height: 16.0),
+            Image.asset(
+              'assets/images/giptv_nobg.png',
+              width: 64.0,
+              height: 64.0,
+            ),
+            const SizedBox(height: 16.0),
+            const Center(
+              child: Text(
+                "version 1.0",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.bgMainLighter20,
+                ),
+              ),
+            ),
+            const Center(
+              child: Text(
+                "© Copyright 2023 NetGip Ltd . All rights Reserved.",
+                style: TextStyle(
+                  color: AppColors.bgMainLighter20,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _settingsButton({
+    required String title,
+    required IconData icon,
+    required Function() onTap,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0),
+      child: Material(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(9999),
+        clipBehavior: Clip.hardEdge,
+        child: InkWell(
+          onTap: onTap,
+          child: DefaultTextStyle(
+            style: const TextStyle(
+              color: Colors.black,
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Icon(icon),
+                  ),
+                  Text(
+                    title,
+                    strutStyle: StrutStyle.disabled,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildGroupTitle({
+    required String label,
+    required IconData icon,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0),
+      child: Row(
+        children: [
+          Icon(
+            icon,
+            color: AppColors.fgMain,
+          ),
+          const SizedBox(width: 8.0),
+          Text(
+            label,
+            style: const TextStyle(
+              color: AppColors.fgMain,
+            ),
+          ),
+        ],
       ),
     );
   }

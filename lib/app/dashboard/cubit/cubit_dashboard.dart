@@ -6,6 +6,12 @@ import 'package:giptv_flutter/domain/entities/entity_user.dart';
 class CubitDashboard extends Cubit<StateDashboard> {
   CubitDashboard() : super(const StateDashboard());
 
+  void openLoginPage({bool shouldClearCache = true}) {
+    Map<DashboardPage, dynamic>? newPageData = shouldClearCache ? {} : null;
+
+    emit(state.copyWith(page: DashboardPage.login, pageData: newPageData));
+  }
+
   void openMainPage(EntityUser user) {
     Map<DashboardPage, dynamic> newPageData = {...state.pageData}..addAll(
         {

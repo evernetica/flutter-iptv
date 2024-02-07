@@ -1306,143 +1306,192 @@ class _DemoChannelsWrapState extends State<DemoChannelsWrap> {
     }
 
     if (widget.channels.isNotEmpty) {
-      return SingleChildScrollView(
-        child: Column(
-          children: [
-            AppBar(
-              backgroundColor: Colors.transparent,
-              scrolledUnderElevation: 0.0,
-              leading: StatefulBuilder(
-                builder: (context, setState) {
-                  return InkWell(
-                    focusNode: backButtonFocus,
-                    borderRadius: BorderRadius.circular(9999),
-                    onTap: widget.back,
-                    onTapDown: (_) {
-                      setState(() {
-                        backButtonPressed = true;
-                      });
-                    },
-                    onTapUp: (_) {
-                      setState(() {
-                        backButtonPressed = false;
-                      });
-                    },
-                    overlayColor: MaterialStateColor.resolveWith(
-                      (_) => Colors.white24,
-                    ),
-                    onFocusChange: (_) => setState(() {}),
-                    child: Icon(
-                      Icons.arrow_back,
-                      color: backButtonFocus.hasFocus || backButtonPressed
-                          ? AppColors.fgMain
-                          : Colors.white,
-                    ),
-                  );
-                },
-              ),
+      return Column(
+        children: [
+          AppBar(
+            backgroundColor: Colors.transparent,
+            scrolledUnderElevation: 0.0,
+            leading: StatefulBuilder(
+              builder: (context, setState) {
+                return InkWell(
+                  focusNode: backButtonFocus,
+                  borderRadius: BorderRadius.circular(9999),
+                  onTap: widget.back,
+                  onTapDown: (_) {
+                    setState(() {
+                      backButtonPressed = true;
+                    });
+                  },
+                  onTapUp: (_) {
+                    setState(() {
+                      backButtonPressed = false;
+                    });
+                  },
+                  overlayColor: MaterialStateColor.resolveWith(
+                    (_) => Colors.white24,
+                  ),
+                  onFocusChange: (_) => setState(() {}),
+                  child: Icon(
+                    Icons.arrow_back,
+                    color: backButtonFocus.hasFocus || backButtonPressed
+                        ? AppColors.fgMain
+                        : Colors.white,
+                  ),
+                );
+              },
             ),
-            Wrap(
-              alignment: WrapAlignment.start,
-              spacing: 16.0,
-              runAlignment: WrapAlignment.spaceEvenly,
-              runSpacing: 16.0,
-              children: List.generate(
-                widget.channels.length,
-                (i) {
-                  bool isForbidden = (widget.user.isParentalControlActive ==
-                          "1")
-                      ? AppStrings.adultKeywords.any(
-                          (keyword) =>
-                              widget.channels[i].name.toLowerCase().contains(
-                                    keyword,
-                                  ),
-                        )
-                      : false;
+          ),
+          Flexible(
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                double sum = -16;
+                int count = 0;
+                do {
+                  count++;
+                  sum += 136;
+                } while (sum < constraints.maxWidth);
+                count--;
 
-                  return InkWell(
-                    borderRadius: const BorderRadius.all(Radius.circular(8.0)),
-                    overlayColor: MaterialStateColor.resolveWith(
-                      (_) => AppColors.fgMain,
-                    ),
-                    onTap: () {
-                      if (isForbidden) return;
+                int rowsN = widget.channels.length ~/ count;
+                int addUnfinishedRow = 0;
+                if (widget.channels.length % count != 0) addUnfinishedRow++;
 
-                      Provider.of<CubitDashboard>(
-                        context,
-                        listen: false,
-                      ).openVideoPage(
-                        videoUrl: widget.channels[i].videoUrl,
-                        idSerial: "${widget.user.idSerial}",
-                        title: widget.channels[i].name,
-                        channelId: "${widget.channels[i].epgChannelId}",
-                        isFavourite: widget.favChannels.any(
-                          (f) => f.linkChannel == widget.channels[i].videoUrl,
-                        ),
-                      );
-                    },
-                    child: SizedBox(
-                      width: 120,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              //color: Colors.white12,
-                              borderRadius: const BorderRadius.all(
-                                Radius.circular(8.0),
-                              ),
-                              border: Border.all(
-                                color: AppColors.bgMainLighter20,
-                              ),
-                            ),
-                            height: 90,
-                            child: Center(
-                              child: Image.network(
-                                widget.channels[i].streamIcon,
-                                width: 48,
-                                height: 48,
-                                errorBuilder: (_, __, ___) => Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Image.asset(
-                                    'assets/images/giptv_nobg.png',
-                                  ),
+                print("count $count ${widget.channels.length % count}");
+
+                return ListView(
+                  children: List.generate(
+                    rowsN + addUnfinishedRow,
+                    (rowIndex) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: List.generate(
+                            widget.channels.length ~/ rowsN,
+                            (channelIndex) {
+                              int i = rowIndex * count + channelIndex;
+
+                              if (i >= widget.channels.length) {
+                                return Container(
+                                  width: 136.0,
+                                );
+                              }
+
+                              bool isForbidden =
+                                  (widget.user.isParentalControlActive == "1")
+                                      ? AppStrings.adultKeywords.any(
+                                          (keyword) => widget.channels[i].name
+                                              .toLowerCase()
+                                              .contains(
+                                                keyword,
+                                              ),
+                                        )
+                                      : false;
+
+                              return Padding(
+                                padding: EdgeInsets.only(
+                                  left: (channelIndex == 0) ? 0 : 16.0,
                                 ),
-                              ),
-                            ),
-                          ),
-                          Flexible(
-                            child: AspectRatio(
-                              aspectRatio: 3,
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Center(
-                                  child: Text(
-                                    isForbidden
-                                        ? "This Channel is Protected"
-                                        : widget.channels[i].name,
-                                    textAlign: TextAlign.center,
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 10.0,
-                                      overflow: TextOverflow.ellipsis,
+                                child: InkWell(
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(8.0)),
+                                  overlayColor: MaterialStateColor.resolveWith(
+                                    (_) => AppColors.fgMain,
+                                  ),
+                                  onTap: () {
+                                    if (isForbidden) return;
+
+                                    Provider.of<CubitDashboard>(
+                                      context,
+                                      listen: false,
+                                    ).openVideoPage(
+                                      videoUrl: widget.channels[i].videoUrl,
+                                      idSerial: "${widget.user.idSerial}",
+                                      title: widget.channels[i].name,
+                                      channelId:
+                                          "${widget.channels[i].epgChannelId}",
+                                      isFavourite: widget.favChannels.any(
+                                        (f) =>
+                                            f.linkChannel ==
+                                            widget.channels[i].videoUrl,
+                                      ),
+                                    );
+                                  },
+                                  child: SizedBox(
+                                    width: 120,
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            //color: Colors.white12,
+                                            borderRadius:
+                                                const BorderRadius.all(
+                                              Radius.circular(8.0),
+                                            ),
+                                            border: Border.all(
+                                              color: AppColors.bgMainLighter20,
+                                            ),
+                                          ),
+                                          height: 90,
+                                          child: Center(
+                                            child: Image.network(
+                                              widget.channels[i].streamIcon,
+                                              width: 48,
+                                              height: 48,
+                                              errorBuilder: (_, __, ___) =>
+                                                  Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Image.asset(
+                                                  'assets/images/giptv_nobg.png',
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        Flexible(
+                                          child: AspectRatio(
+                                            aspectRatio: 3,
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Center(
+                                                child: Text(
+                                                  isForbidden
+                                                      ? "This Channel is Protected"
+                                                      : widget.channels[i].name,
+                                                  textAlign: TextAlign.center,
+                                                  style: const TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 10.0,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ),
-                              ),
-                            ),
+                              );
+                            },
                           ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
+                        ),
+                      );
+                    },
+                  ),
+                );
+              },
             ),
-          ],
-        ),
+          ),
+        ],
       );
     }
 

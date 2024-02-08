@@ -596,13 +596,63 @@ class ImplRepositoryGiptvApiInteractions implements IRepositoryApiInteractions {
 
     return true;
   }
+
+  @override
+  Future<EntityUser> getUser(
+    String code,
+    String fullName,
+  ) async {
+    Request request = Request(
+      "GET",
+      Uri(
+        scheme: "https",
+        host: "giptv.ro",
+        path: "admin/api/serials/getUser.php",
+        queryParameters: {
+          "code": code,
+          "fullname": fullName,
+        },
+      ),
+    );
+
+    request.headers.addAll(
+      {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    );
+
+    Response response = await Response.fromStream(await request.send());
+
+    print(response.body);
+
+    Map resMap = jsonDecode(response.body)["Users"].first;
+
+    EntityUser user = EntityUser(
+      code: resMap["code"],
+      deviceId: resMap["deviceId"],
+      email: resMap["email"],
+      fullName: resMap["fullName"],
+      ip: resMap["ip"],
+      registered: resMap["registred"],
+      idSerial: resMap["IdSerial"],
+      purchase: resMap["purchase"],
+      trialStartTime: resMap["trial_start_time"],
+      trialFinishTime: resMap["trial_finish_time"],
+      deviceId2: resMap["deviceId2"],
+      deviceId3: resMap["deviceId3"],
+      isParentalControlActive: resMap["isParentalControlActive"],
+      passParentalControl: resMap["passParentalControl"],
+    );
+
+    print(user);
+
+    return user;
+  }
 }
 
 /*
 
-    @FormUrlEncoded
-    @POST("support/sendSupport.php")
-    Call<ResponsePHP> sendSupport(@Header("Content-Type") String str, @Field("IdSerial") String IdSerial
-            ,@Field("text") String text);
+    @GET("serials/getUser.php")
+    Call<Users> getUserByCode(@Header("Content-Type") String str, @Query("code") String code,@Query("fullname") String fullname);
 
 */

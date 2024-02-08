@@ -92,4 +92,15 @@ class ProviderApiInteractions {
         idSerial,
         text,
       );
+
+
+  //TODO: probably delete?
+  Future<EntityUser> getUser(
+    String code,
+    String fullName,
+  ) =>
+      _repository.getUser(
+        code,
+        fullName,
+      );
 }

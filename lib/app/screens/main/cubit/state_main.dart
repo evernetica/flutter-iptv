@@ -11,7 +11,7 @@ enum StagesScreenMain {
   radio,
   settings,
   favorites,
-  about,
+  activation,
 }
 
 class StateMain extends Equatable {

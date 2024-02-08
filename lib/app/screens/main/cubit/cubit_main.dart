@@ -90,7 +90,7 @@ class CubitMain extends Cubit<StateMain> {
     emit(state.copyWith(stage: StagesScreenMain.favorites));
   }
 
-  void goToAboutStage() {
-    emit(state.copyWith(stage: StagesScreenMain.about));
+  void goToActivationStage() {
+    emit(state.copyWith(stage: StagesScreenMain.activation));
   }
 }

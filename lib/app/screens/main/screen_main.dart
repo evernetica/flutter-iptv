@@ -47,6 +47,8 @@ class ScreenMain extends StatelessWidget {
               await bloc.getWebsite(providerApi);
               await bloc.getRadioStations(providerApi, user.code ?? "");
               await bloc.getFavorites(providerApi, user.idSerial ?? "");
+
+              // await providerApi.getUser(user.code ?? "", user.fullName ?? "");
             },
           );
           return PopScope(
@@ -96,11 +98,17 @@ class ScreenMain extends StatelessWidget {
                           isActive: state.stage == StagesScreenMain.settings,
                           callback: bloc.goToSettingsStage,
                         ),
+                        MenuItem(
+                          icon: Icons.diamond,
+                          label: 'Activation',
+                          isActive: state.stage == StagesScreenMain.activation,
+                          callback: bloc.goToActivationStage,
+                        ),
                         if (state.websiteUrl.visible == "1")
                           MenuItem(
                             icon: Icons.public,
                             label: state.websiteUrl.content,
-                            isActive: state.stage == StagesScreenMain.about,
+                            isActive: false,
                             callback: () {
                               launchUrl(Uri.parse(state.websiteUrl.name));
                             },
@@ -154,6 +162,10 @@ class ScreenMain extends StatelessWidget {
                                         favorites: state.favorites,
                                         user: state.user,
                                       );
+                                    case StagesScreenMain.activation:
+                                      return ActivationElement(
+                                        user: state.user,
+                                      );
                                     case StagesScreenMain.settings:
                                       return DemoSettingsList(
                                         user: state.user,
@@ -182,6 +194,43 @@ class ScreenMain extends StatelessWidget {
           );
         },
       ),
+    );
+  }
+}
+
+class ActivationElement extends StatelessWidget {
+  const ActivationElement({super.key, required this.user});
+
+  final EntityUser user;
+
+  @override
+  Widget build(BuildContext context) {
+    bool isActivated = user.registered == "1";
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        Image.asset(
+          "assets/images/qc1.png",
+          width: 128.0,
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            isActivated ? "Activated" : "Activation",
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        Text(
+          isActivated
+              ? "Application is now activated"
+              : "Welcome to the Giptv application!\nScan the code for activation, or access the website www.giptv.ro",
+          textAlign: TextAlign.center,
+        ),
+      ],
     );
   }
 }

@@ -57,4 +57,9 @@ abstract class IRepositoryApiInteractions {
     String idSerial,
     String text,
   );
+
+  Future<EntityUser> getUser(
+    String code,
+    String fullName,
+  );
 }

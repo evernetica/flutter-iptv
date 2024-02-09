@@ -5,7 +5,7 @@
     <uses-feature android:name="android.software.leanback"
         android:required="false" />
     <application
-        android:label="giptv_flutter"
+        android:label="Gip TV"
         android:name="${applicationName}"
         android:usesCleartextTraffic="true"
         android:icon="@mipmap/ic_launcher"

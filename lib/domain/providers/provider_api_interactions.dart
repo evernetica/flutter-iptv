@@ -34,12 +34,16 @@ class ProviderApiInteractions {
 
   Future<EntityUser> login(String code) => _repository.login(code);
 
-  Future<List<EntityCategory>> getCategories() => _repository.getCategories();
+  Future<List<EntityCategory>> getCategories(String code) =>
+      _repository.getCategories(code);
 
   Future<EntityWebsite> getWebsite() => _repository.getWebsite();
 
-  Future<List<EntityChannel>> getChannelsByCategory(String categoryId) =>
-      _repository.getChannelsByCategory(categoryId);
+  Future<List<EntityChannel>> getChannelsByCategory(
+    String categoryId,
+    String code,
+  ) =>
+      _repository.getChannelsByCategory(categoryId, code);
 
   Future<List<EntityRadioStation>> getRadioStations(String code) =>
       _repository.getRadioStations(code);
@@ -92,7 +96,6 @@ class ProviderApiInteractions {
         idSerial,
         text,
       );
-
 
   //TODO: probably delete?
   Future<EntityUser> getUser(

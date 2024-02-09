@@ -1,3 +1,4 @@
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:giptv_flutter/app/dashboard/cubit/cubit_dashboard.dart';
 import 'package:giptv_flutter/app/screens/main/cubit/cubit_main.dart';
@@ -257,96 +258,99 @@ class _DemoFavoritesWrapState extends State<DemoFavoritesWrap> {
       child: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 16.0),
-          child: Wrap(
-            alignment: WrapAlignment.start,
-            spacing: 16.0,
-            runAlignment: WrapAlignment.spaceEvenly,
-            runSpacing: 16.0,
-            children: List.generate(
-              widget.favorites.length,
-              (i) {
-                bool isForbidden = (widget.user.isParentalControlActive == "1")
-                    ? AppStrings.adultKeywords.any(
-                        (keyword) => widget.favorites[i].titleChannel
-                            .toLowerCase()
-                            .contains(
-                              keyword,
-                            ),
-                      )
-                    : false;
+          child: Center(
+            child: Wrap(
+              alignment: WrapAlignment.start,
+              spacing: 16.0,
+              runAlignment: WrapAlignment.spaceEvenly,
+              runSpacing: 16.0,
+              children: List.generate(
+                widget.favorites.length,
+                (i) {
+                  bool isForbidden =
+                      (widget.user.isParentalControlActive == "1")
+                          ? AppStrings.adultKeywords.any(
+                              (keyword) => widget.favorites[i].titleChannel
+                                  .toLowerCase()
+                                  .contains(
+                                    keyword,
+                                  ),
+                            )
+                          : false;
 
-                return InkWell(
-                  borderRadius: const BorderRadius.all(Radius.circular(8.0)),
-                  overlayColor: MaterialStateColor.resolveWith(
-                    (_) => AppColors.fgMain,
-                  ),
-                  onTap: () {
-                    if (isForbidden) return;
+                  return InkWell(
+                    borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+                    overlayColor: MaterialStateColor.resolveWith(
+                      (_) => AppColors.fgMain,
+                    ),
+                    onTap: () {
+                      if (isForbidden) return;
 
-                    Provider.of<CubitDashboard>(
-                      context,
-                      listen: false,
-                    ).openVideoPage(
-                      videoUrl: widget.favorites[i].linkChannel,
-                      idSerial: "${widget.user.idSerial}",
-                      title: widget.favorites[i].titleChannel,
-                      channelId: widget.favorites[i].channelId,
-                      isFavourite: true,
-                    );
-                  },
-                  child: SizedBox(
-                    width: 120,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            //color: Colors.white12,
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(8.0),
+                      Provider.of<CubitDashboard>(
+                        context,
+                        listen: false,
+                      ).openVideoPage(
+                        videoUrl: widget.favorites[i].linkChannel,
+                        idSerial: "${widget.user.idSerial}",
+                        title: widget.favorites[i].titleChannel,
+                        channelId: widget.favorites[i].channelId,
+                        isFavourite: true,
+                      );
+                    },
+                    child: SizedBox(
+                      width: 120,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              //color: Colors.white12,
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(8.0),
+                              ),
+                              border: Border.all(
+                                color: AppColors.bgMainLighter20,
+                              ),
                             ),
-                            border: Border.all(
-                              color: AppColors.bgMainLighter20,
-                            ),
-                          ),
-                          height: 90,
-                          child: Center(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Image.asset(
-                                'assets/images/radio_logo.png',
+                            height: 90,
+                            child: Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Image.asset(
+                                  'assets/images/giptv_nobg.png',
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                        Flexible(
-                          child: AspectRatio(
-                            aspectRatio: 3,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Center(
-                                child: Text(
-                                  isForbidden
-                                      ? "This Channel Content is Protected"
-                                      : widget.favorites[i].titleChannel,
-                                  textAlign: TextAlign.center,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 10.0,
-                                    overflow: TextOverflow.ellipsis,
+                          Flexible(
+                            child: AspectRatio(
+                              aspectRatio: 3,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Center(
+                                  child: Text(
+                                    isForbidden
+                                        ? "This Channel Content is Protected"
+                                        : widget.favorites[i].titleChannel,
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 10.0,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
           ),
         ),

@@ -17,7 +17,7 @@ class CubitMain extends Cubit<StateMain> {
   Future getCategories(ProviderApiInteractions provider) async {
     emit(
       state.copyWith(
-        categories: await provider.getCategories(),
+        categories: await provider.getCategories(state.user.code ?? ""),
       ),
     );
   }
@@ -36,7 +36,10 @@ class CubitMain extends Cubit<StateMain> {
   ) async {
     emit(
       state.copyWith(
-        channels: await provider.getChannelsByCategory(categoryId),
+        channels: await provider.getChannelsByCategory(
+          categoryId,
+          state.user.code ?? "",
+        ),
       ),
     );
   }

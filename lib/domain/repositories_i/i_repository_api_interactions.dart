@@ -19,11 +19,14 @@ abstract class IRepositoryApiInteractions {
 
   Future<EntityUser> login(String code);
 
-  Future<List<EntityCategory>> getCategories();
+  Future<List<EntityCategory>> getCategories(String code);
 
   Future<EntityWebsite> getWebsite();
 
-  Future<List<EntityChannel>> getChannelsByCategory(String categoryId);
+  Future<List<EntityChannel>> getChannelsByCategory(
+    String categoryId,
+    String code,
+  );
 
   Future<List<EntityRadioStation>> getRadioStations(String code);
 

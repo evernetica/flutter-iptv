@@ -41,26 +41,27 @@ class ScreenLogin extends StatelessWidget {
               bloc.goToMainStage();
             }
 
-            //TODO: REMOVE!!!!!!!!!!!!!!
-            /// TEMPORARY CODE!!!!
-
-            EntityUser user = await Provider.of<ProviderApiInteractions>(
-              context,
-              listen: false,
-            ).login("11775");
-
-            Provider.of<ProviderApiInteractions>(
-              context,
-              listen: false,
-            ).getFavorites(user.idSerial!);
-
-            if (context.mounted) {
-              if (user.registered == "1") {
-                BlocProvider.of<CubitDashboard>(
-                  context,
-                ).openMainPage(user);
-              }
-            }
+            // //TODO: REMOVE!!!!!!!!!!!!!!
+            // /// TEMPORARY CODE!!!!
+            //
+            // EntityUser user = await Provider.of<ProviderApiInteractions>(
+            //   context,
+            //   listen: false,
+            // ).login("11775");
+            //
+            // Provider.of<ProviderApiInteractions>(
+            //   context,
+            //   listen: false,
+            // ).getFavorites(user.idSerial!);
+            //
+            // if (context.mounted) {
+            //   //TODO: is this right?
+            //   //if (user.registered == "1") {
+            //     BlocProvider.of<CubitDashboard>(
+            //       context,
+            //     ).openMainPage(user);
+            //   //}
+            // }
           },
         );
         return BlocBuilder<CubitLogin, StateLogin>(
@@ -162,13 +163,13 @@ class ScreenLogin extends StatelessWidget {
 
                             print(context.mounted);
                             if (context.mounted) {
-                              if (user.registered == "1") {
+                              //if (user.registered == "1") {
                                 print("login");
 
                                 BlocProvider.of<CubitDashboard>(
                                   context,
                                 ).openMainPage(user);
-                              }
+                              //}
                             }
                           },
                           style: ButtonStyle(

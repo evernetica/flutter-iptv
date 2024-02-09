@@ -182,7 +182,7 @@ class ImplRepositoryGiptvApiInteractions implements IRepositoryApiInteractions {
     return user;
   }
 
-  Future _getCustomLink() async {
+  Future _getCustomLink(String code) async {
     Request request = Request(
       "GET",
       Uri(
@@ -190,7 +190,7 @@ class ImplRepositoryGiptvApiInteractions implements IRepositoryApiInteractions {
         host: "giptv.ro",
         path: "admin/api/customChannels/getCustomList.php",
         queryParameters: {
-          "email": "11775",
+          "email": code,
         },
       ),
     );
@@ -219,8 +219,8 @@ class ImplRepositoryGiptvApiInteractions implements IRepositoryApiInteractions {
   }
 
   @override
-  Future<List<EntityCategory>> getCategories() async {
-    if (customLink == null) await _getCustomLink();
+  Future<List<EntityCategory>> getCategories(String code) async {
+    if (customLink == null) await _getCustomLink(code);
 
     List<EntityCategory> output = [];
 
@@ -283,8 +283,11 @@ class ImplRepositoryGiptvApiInteractions implements IRepositoryApiInteractions {
   }
 
   @override
-  Future<List<EntityChannel>> getChannelsByCategory(String categoryId) async {
-    if (customLink == null) await _getCustomLink();
+  Future<List<EntityChannel>> getChannelsByCategory(
+    String categoryId,
+    String code,
+  ) async {
+    if (customLink == null) await _getCustomLink(code);
 
     List<EntityChannel> output = [];
 
@@ -413,6 +416,10 @@ class ImplRepositoryGiptvApiInteractions implements IRepositoryApiInteractions {
         scheme: "https",
         host: "giptv.ro",
         path: "admin/api/fav/removeFav.php",
+        queryParameters: {
+          'link': link,
+          'IdSerial': idSerial,
+        },
       ),
     );
 
@@ -421,11 +428,6 @@ class ImplRepositoryGiptvApiInteractions implements IRepositoryApiInteractions {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
     );
-
-    request.bodyFields = {
-      'link': link,
-      'IdSerial': idSerial,
-    };
 
     print("send removeFav");
     Response response = await Response.fromStream(await request.send());

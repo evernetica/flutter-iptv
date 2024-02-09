@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:format/format.dart';
 import 'package:giptv_flutter/app/screens/screen_base.dart';
 import 'package:giptv_flutter/domain/entities/entity_radio_station.dart';
 import 'package:giptv_flutter/misc/app_colors.dart';
@@ -67,6 +66,34 @@ class _ScreenRadioState extends State<ScreenRadio> {
                   }
                 },
               ),
+              Align(
+                alignment: Alignment.topLeft,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Material(
+                    color: Colors.white12,
+                    shape: const CircleBorder(),
+                    clipBehavior: Clip.hardEdge,
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.of(context).pop();
+                      },
+                      overlayColor: MaterialStateColor.resolveWith(
+                        (_) => Colors.white24,
+                      ),
+                      borderRadius: BorderRadius.circular(9999),
+                      child: const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Icon(
+                          Icons.arrow_back,
+                          color: Colors.white,
+                          size: 32.0,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
               Expanded(
                 flex: 2,
                 child: Center(
@@ -86,14 +113,6 @@ class _ScreenRadioState extends State<ScreenRadio> {
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 22.0,
-                      ),
-                    ),
-                    const SizedBox(height: 8.0),
-                    Text(
-                      "${format("{:02d}", controller.value.position.inMinutes)}"
-                      ":${format("{:02d}", controller.value.position.inSeconds % 60)}",
-                      style: const TextStyle(
-                        color: AppColors.bgMainLighter80,
                       ),
                     ),
                     const SizedBox(height: 8.0),
@@ -130,5 +149,11 @@ class _ScreenRadioState extends State<ScreenRadio> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 }

@@ -134,9 +134,7 @@ class ScreenMain extends StatelessWidget {
                                       shape: const CircleBorder(),
                                       clipBehavior: Clip.hardEdge,
                                       child: InkWell(
-                                        onTap: () {
-                                          bloc.goToLiveTvStage(providerApi);
-                                        },
+                                        onTap: bloc.clearChannels,
                                         overlayColor:
                                             MaterialStateColor.resolveWith(
                                           (_) => Colors.white24,

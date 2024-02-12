@@ -11,6 +11,7 @@ class CubitMain extends Cubit<StateMain> {
     emit(
       state.copyWith(
         channels: [],
+        showBackButton: false,
       ),
     );
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:giptv_flutter/domain/entities/entity_user.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class BodyActivation extends StatelessWidget {
   const BodyActivation({super.key, required this.user});
@@ -14,9 +15,14 @@ class BodyActivation extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.max,
       children: [
-        Image.asset(
-          "assets/images/qc1.png",
-          width: 128.0,
+        GestureDetector(
+          onTap: () {
+            launchUrl(Uri.parse("https://www.giptv.ro"));
+          },
+          child: Image.asset(
+            "assets/images/qc1.png",
+            width: 128.0,
+          ),
         ),
         Padding(
           padding: const EdgeInsets.all(8.0),
@@ -30,7 +36,8 @@ class BodyActivation extends StatelessWidget {
         Text(
           isActivated
               ? "Application is now activated"
-              : "Welcome to the Giptv application!\nScan the code for activation, or access the website www.giptv.ro",
+              : "Welcome to the Giptv application!\nScan or click the code for "
+                  "activation, or access the website www.giptv.ro",
           textAlign: TextAlign.center,
         ),
       ],

@@ -78,7 +78,7 @@ class Dashboard extends StatelessWidget {
         return [
           MaterialPage(
             child: ScreenMain(
-              user: state.pageData[DashboardPage.main],
+              initialUser: state.pageData[DashboardPage.main],
             ),
           ),
         ];
@@ -86,7 +86,7 @@ class Dashboard extends StatelessWidget {
         return [
           MaterialPage(
             child: ScreenMain(
-              user: state.pageData[DashboardPage.main],
+              initialUser: state.pageData[DashboardPage.main],
             ),
           ),
           MaterialPage(
@@ -103,7 +103,7 @@ class Dashboard extends StatelessWidget {
         return [
           MaterialPage(
             child: ScreenMain(
-              user: state.pageData[DashboardPage.main],
+              initialUser: state.pageData[DashboardPage.main],
             ),
           ),
           MaterialPage(

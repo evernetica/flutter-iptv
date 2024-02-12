@@ -127,6 +127,33 @@ class ScreenMain extends StatelessWidget {
                                 ),
                               ),
                               centerTitle: true,
+                              leading: state.channels.isNotEmpty ||
+                                      state.showBackButton
+                                  ? Material(
+                                      color: Colors.transparent,
+                                      shape: const CircleBorder(),
+                                      clipBehavior: Clip.hardEdge,
+                                      child: InkWell(
+                                        onTap: () {
+                                          bloc.goToLiveTvStage(providerApi);
+                                        },
+                                        overlayColor:
+                                            MaterialStateColor.resolveWith(
+                                          (_) => Colors.white24,
+                                        ),
+                                        borderRadius:
+                                            BorderRadius.circular(9999),
+                                        child: const Padding(
+                                          padding: EdgeInsets.all(8.0),
+                                          child: Icon(
+                                            Icons.arrow_back,
+                                            color: Colors.white,
+                                            size: 32.0,
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  : null,
                             )
                           : null,
                       drawer: isDrawerClosable ? drawer : null,
@@ -154,6 +181,7 @@ class ScreenMain extends StatelessWidget {
                                         favChannels: state.favorites,
                                         user: state.user,
                                         back: bloc.clearChannels,
+                                        bloc: bloc,
                                       );
                                     case StagesScreenMain.radio:
                                       return BodyRadio(

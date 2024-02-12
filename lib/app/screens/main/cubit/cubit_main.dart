@@ -1,5 +1,6 @@
 import 'package:giptv_flutter/app/screens/main/cubit/state_main.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:giptv_flutter/domain/entities/entity_channel.dart';
 import 'package:giptv_flutter/domain/entities/entity_user.dart';
 import 'package:giptv_flutter/domain/providers/provider_api_interactions.dart';
 
@@ -34,14 +35,14 @@ class CubitMain extends Cubit<StateMain> {
     ProviderApiInteractions provider,
     String categoryId,
   ) async {
-    emit(
-      state.copyWith(
-        channels: await provider.getChannelsByCategory(
-          categoryId,
-          state.user.code ?? "",
-        ),
-      ),
+    List<EntityChannel> channels = await provider.getChannelsByCategory(
+      categoryId,
+      state.user.code ?? "",
     );
+
+    if (!state.showBackButton) return;
+
+    emit(state.copyWith(channels: channels));
   }
 
   Future getRadioStations(ProviderApiInteractions provider, String code) async {
@@ -60,29 +61,38 @@ class CubitMain extends Cubit<StateMain> {
     );
   }
 
-  void setUrl(String url) {
-    emit(state.copyWith(videoUrl: url));
-  }
-
   void setUser(EntityUser user) {
     emit(state.copyWith(user: user));
   }
 
-  void selectChannel(int index) {
-    emit(state.copyWith(selectedChannel: index));
-  }
-
   Future goToLiveTvStage(ProviderApiInteractions provider) async {
+    emit(
+      state.copyWith(
+        stage: StagesScreenMain.liveTv,
+        channels: [],
+        categories: [],
+        showBackButton: false,
+      ),
+    );
     await getCategories(provider);
-    emit(state.copyWith(stage: StagesScreenMain.liveTv));
   }
 
   void goToRadioStage() {
-    emit(state.copyWith(stage: StagesScreenMain.radio));
+    emit(
+      state.copyWith(
+        stage: StagesScreenMain.radio,
+        showBackButton: false,
+      ),
+    );
   }
 
   void goToSettingsStage() {
-    emit(state.copyWith(stage: StagesScreenMain.settings));
+    emit(
+      state.copyWith(
+        stage: StagesScreenMain.settings,
+        showBackButton: false,
+      ),
+    );
   }
 
   Future goToFavoritesStage(
@@ -90,10 +100,24 @@ class CubitMain extends Cubit<StateMain> {
     String idSerial,
   ) async {
     await getFavorites(provider, idSerial);
-    emit(state.copyWith(stage: StagesScreenMain.favorites));
+    emit(
+      state.copyWith(
+        stage: StagesScreenMain.favorites,
+        showBackButton: false,
+      ),
+    );
   }
 
   void goToActivationStage() {
-    emit(state.copyWith(stage: StagesScreenMain.activation));
+    emit(
+      state.copyWith(
+        stage: StagesScreenMain.activation,
+        showBackButton: false,
+      ),
+    );
+  }
+
+  void setBackButtonVisibility(bool newState) {
+    emit(state.copyWith(showBackButton: newState));
   }
 }

@@ -44,6 +44,7 @@ class StateMain extends Equatable {
       name: "",
     ),
     this.selectedChannel = -1,
+    this.showBackButton = false,
   });
 
   StateMain copyWith({
@@ -56,6 +57,7 @@ class StateMain extends Equatable {
     String? videoUrl,
     EntityWebsite? websiteUrl,
     int? selectedChannel,
+    bool? showBackButton,
   }) {
     return StateMain(
       stage: stage ?? this.stage,
@@ -67,6 +69,7 @@ class StateMain extends Equatable {
       videoUrl: videoUrl ?? this.videoUrl,
       websiteUrl: websiteUrl ?? this.websiteUrl,
       selectedChannel: selectedChannel ?? this.selectedChannel,
+      showBackButton: showBackButton ?? this.showBackButton,
     );
   }
 
@@ -80,6 +83,7 @@ class StateMain extends Equatable {
   final String videoUrl;
   final EntityWebsite websiteUrl;
   final int selectedChannel;
+  final bool showBackButton;
 
   @override
   List<Object?> get props => [
@@ -100,5 +104,6 @@ class StateMain extends Equatable {
         videoUrl,
         websiteUrl,
         selectedChannel,
+        showBackButton,
       ];
 }

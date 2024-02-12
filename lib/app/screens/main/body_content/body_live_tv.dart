@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:giptv_flutter/app/dashboard/cubit/cubit_dashboard.dart';
+import 'package:giptv_flutter/app/screens/main/cubit/cubit_main.dart';
 import 'package:giptv_flutter/app/screens/main/widgets/channel_list_list_view.dart';
 import 'package:giptv_flutter/app/screens/main/widgets/media_content_button.dart';
 import 'package:giptv_flutter/domain/entities/entity_category.dart';
@@ -20,6 +21,7 @@ class BodyLiveTv extends StatefulWidget {
     required this.user,
     required this.categoryCallback,
     required this.back,
+    required this.bloc,
   });
 
   final List<EntityCategory> categories;
@@ -28,6 +30,7 @@ class BodyLiveTv extends StatefulWidget {
   final EntityUser user;
   final Function(String) categoryCallback;
   final Function() back;
+  final CubitMain bloc;
 
   @override
   State<BodyLiveTv> createState() => _BodyLiveTvState();
@@ -178,12 +181,15 @@ class _BodyLiveTvState extends State<BodyLiveTv> {
                 onTap: () async {
                   if (isForbidden) return;
 
+                  widget.bloc.setBackButtonVisibility(true);
                   setState(() {
                     isLoadingChannels = true;
                   });
 
                   await widget
                       .categoryCallback(widget.categories[i].categoryId);
+
+                  if (!context.mounted) return;
 
                   setState(() {
                     isLoadingChannels = false;

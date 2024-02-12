@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:giptv_flutter/app/screens/screen_base.dart';
 import 'package:giptv_flutter/domain/providers/provider_api_interactions.dart';
 import 'package:giptv_flutter/misc/app_colors.dart';
@@ -30,6 +31,7 @@ class _ScreenVideoState extends State<ScreenVideo> {
   late VideoPlayerController controller;
   late Future init;
   late bool isFavourite;
+  late bool isPortraitMode = false;
 
   @override
   void initState() {
@@ -42,6 +44,13 @@ class _ScreenVideoState extends State<ScreenVideo> {
     );
 
     init = controller.initialize();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.landscapeLeft,
+        DeviceOrientation.landscapeRight,
+      ]).then((_) => setState(() {}));
+    });
   }
 
   @override
@@ -143,6 +152,43 @@ class _ScreenVideoState extends State<ScreenVideo> {
                         ),
                       ),
                     ),
+                    const SizedBox(width: 8.0),
+                    Material(
+                      color: Colors.white12,
+                      shape: const CircleBorder(),
+                      clipBehavior: Clip.hardEdge,
+                      child: InkWell(
+                        onTap: () {
+                          if (isPortraitMode) {
+                            SystemChrome.setPreferredOrientations([
+                              DeviceOrientation.landscapeLeft,
+                              DeviceOrientation.landscapeRight,
+                            ]).then((_) => setState(() {
+                                  isPortraitMode = false;
+                                }));
+                          } else {
+                            SystemChrome.setPreferredOrientations([
+                              DeviceOrientation.portraitUp,
+                              DeviceOrientation.portraitDown,
+                            ]).then((_) => setState(() {
+                                  isPortraitMode = true;
+                                }));
+                          }
+                        },
+                        overlayColor: MaterialStateColor.resolveWith(
+                          (_) => Colors.white24,
+                        ),
+                        borderRadius: BorderRadius.circular(9999),
+                        child: const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Icon(
+                            Icons.screen_rotation,
+                            color: Colors.white,
+                            size: 32.0,
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -154,6 +200,12 @@ class _ScreenVideoState extends State<ScreenVideo> {
   }
 
   void _onPop() {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     controller.dispose();
   }
 }

@@ -96,7 +96,7 @@ class _BodyLiveTvState extends State<BodyLiveTv> {
                         children: [
                           Container(
                             width: (i % 4 + 1) * 50,
-                            height: 16.0,
+                            height: 18.0,
                             decoration: const BoxDecoration(
                               color: AppColors.bgMainLighter20,
                               borderRadius: BorderRadius.all(

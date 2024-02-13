@@ -92,10 +92,12 @@ class Dashboard extends StatelessWidget {
           MaterialPage(
             child: ScreenVideo(
               videoUrl: state.pageData[DashboardPage.video]["videoUrl"],
-              idSerial: state.pageData[DashboardPage.video]["idSerial"],
               title: state.pageData[DashboardPage.video]["title"],
               channelId: state.pageData[DashboardPage.video]["channelId"],
               isFavourite: state.pageData[DashboardPage.video]["isFavourite"],
+              user: state.pageData[DashboardPage.video]["user"],
+              channels: state.pageData[DashboardPage.video]["channels"],
+              favChannels: state.pageData[DashboardPage.video]["favChannels"],
             ),
           ),
         ];

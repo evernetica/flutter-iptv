@@ -96,7 +96,7 @@ class _BodyLiveTvState extends State<BodyLiveTv> {
                         children: [
                           Container(
                             width: (i % 4 + 1) * 50,
-                            height: 18.0,
+                            height: 20.0,
                             decoration: const BoxDecoration(
                               color: AppColors.bgMainLighter20,
                               borderRadius: BorderRadius.all(
@@ -142,12 +142,14 @@ class _BodyLiveTvState extends State<BodyLiveTv> {
                   listen: false,
                 ).openVideoPage(
                   videoUrl: widget.channels[i].videoUrl,
-                  idSerial: "${widget.user.idSerial}",
                   title: widget.channels[i].name,
                   channelId: "${widget.channels[i].epgChannelId}",
                   isFavourite: widget.favChannels.any(
                     (f) => f.linkChannel == widget.channels[i].videoUrl,
                   ),
+                  user: widget.user,
+                  channels: widget.channels,
+                  favChannels: widget.favChannels,
                 );
               },
             );

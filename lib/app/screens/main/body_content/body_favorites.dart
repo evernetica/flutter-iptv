@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:giptv_flutter/app/dashboard/cubit/cubit_dashboard.dart';
 import 'package:giptv_flutter/app/screens/main/widgets/channel_list_list_view.dart';
 import 'package:giptv_flutter/app/screens/main/widgets/media_content_button.dart';
+import 'package:giptv_flutter/domain/entities/entity_channel.dart';
 import 'package:giptv_flutter/domain/entities/entity_fav_channel.dart';
 import 'package:giptv_flutter/domain/entities/entity_user.dart';
 import 'package:giptv_flutter/misc/app_strings.dart';
@@ -44,10 +45,31 @@ class BodyFavorites extends StatelessWidget {
                 listen: false,
               ).openVideoPage(
                 videoUrl: favorites[i].linkChannel,
-                idSerial: "${user.idSerial}",
                 title: favorites[i].titleChannel,
                 channelId: favorites[i].channelId,
                 isFavourite: true,
+                user: user,
+                channels: List.generate(
+                  favorites.length,
+                  (i) => EntityChannel(
+                    num: -1,
+                    name: favorites[i].titleChannel,
+                    streamType: '',
+                    streamId: -1,
+                    streamIcon: '',
+                    epgChannelId: favorites[i].channelId,
+                    added: '',
+                    customSid: '',
+                    tvArchive: -1,
+                    directSource: '',
+                    tvArchiveDuration: -1,
+                    categoryId: '',
+                    categoryIds: [],
+                    thumbnail: '',
+                    videoUrl: favorites[i].linkChannel,
+                  ),
+                ),
+                favChannels: favorites,
               );
             },
           );

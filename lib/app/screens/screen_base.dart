@@ -8,23 +8,29 @@ class ScreenBase extends StatelessWidget {
     this.appBar,
     this.drawer,
     this.backgroundColor = AppColors.bgMain,
+    this.drawerScrimColor,
     this.extendBodyBehindAppBar = false,
+    this.scaffoldKey,
   });
 
   final Widget child;
   final AppBar? appBar;
-  final Drawer? drawer;
+  final Widget? drawer;
   final Color? backgroundColor;
+  final Color? drawerScrimColor;
   final bool extendBodyBehindAppBar;
+  final GlobalKey? scaffoldKey;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffoldKey,
       backgroundColor: backgroundColor,
       extendBodyBehindAppBar: extendBodyBehindAppBar,
       appBar: appBar,
       drawer: drawer,
       body: child,
+      drawerScrimColor: drawerScrimColor,
     );
   }
 }

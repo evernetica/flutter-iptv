@@ -25,6 +25,7 @@ abstract class IRepositoryApiInteractions {
 
   Future<List<EntityChannel>> getChannelsByCategory(
     String categoryId,
+    String categoryName,
     String code,
   );
 
@@ -64,5 +65,9 @@ abstract class IRepositoryApiInteractions {
   Future<EntityUser> getUser(
     String code,
     String fullName,
+  );
+
+  Future getEpg(
+    String code,
   );
 }

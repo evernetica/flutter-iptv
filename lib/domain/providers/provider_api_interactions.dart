@@ -41,9 +41,10 @@ class ProviderApiInteractions {
 
   Future<List<EntityChannel>> getChannelsByCategory(
     String categoryId,
+    String categoryName,
     String code,
   ) =>
-      _repository.getChannelsByCategory(categoryId, code);
+      _repository.getChannelsByCategory(categoryId, categoryName, code);
 
   Future<List<EntityRadioStation>> getRadioStations(String code) =>
       _repository.getRadioStations(code);
@@ -105,5 +106,12 @@ class ProviderApiInteractions {
       _repository.getUser(
         code,
         fullName,
+      );
+
+  Future getEpg(
+    String code,
+  ) =>
+      _repository.getEpg(
+        code,
       );
 }

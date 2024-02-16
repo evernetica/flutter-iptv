@@ -35,9 +35,15 @@ class CubitMain extends Cubit<StateMain> {
   Future getChannels(
     ProviderApiInteractions provider,
     String categoryId,
+    String categoryName,
   ) async {
+
+
+    print("GET :: $categoryId :: $categoryName");
+
     List<EntityChannel> channels = await provider.getChannelsByCategory(
       categoryId,
+      categoryName,
       state.user.code ?? "",
     );
 

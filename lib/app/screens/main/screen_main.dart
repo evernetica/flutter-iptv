@@ -175,6 +175,11 @@ class ScreenMain extends StatelessWidget {
                                             bloc.getChannels(
                                           providerApi,
                                           catId,
+                                          state.categories
+                                              .firstWhere(
+                                                (c) => c.categoryId == catId,
+                                              )
+                                              .categoryName,
                                         ),
                                         favChannels: state.favorites,
                                         user: state.user,

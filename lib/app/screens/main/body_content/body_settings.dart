@@ -181,36 +181,52 @@ class _BodySettingsState extends State<BodySettings> {
     required IconData icon,
     required Function() onTap,
   }) {
+    bool isFocused = false;
     return Padding(
       padding: const EdgeInsets.only(bottom: 8.0),
       child: Material(
         color: Colors.white,
         borderRadius: BorderRadius.circular(9999),
         clipBehavior: Clip.hardEdge,
-        child: InkWell(
-          onTap: onTap,
-          child: DefaultTextStyle(
-            style: const TextStyle(
-              color: Colors.black,
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Icon(icon),
-                  ),
-                  Text(
-                    title,
-                    strutStyle: StrutStyle.disabled,
-                  ),
-                ],
+        child: StatefulBuilder(builder: (context, setState) {
+          return InkWell(
+            onTap: onTap,
+            onFocusChange: (focused) {
+              setState(() {
+                isFocused = focused;
+              });
+            },
+            overlayColor:
+                MaterialStateColor.resolveWith((_) => AppColors.fgMain),
+            child: DefaultTextStyle(
+              style: const TextStyle(
+                color: Colors.black,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Icon(
+                        icon,
+                        color: isFocused ? Colors.white : null,
+                      ),
+                    ),
+                    Text(
+                      title,
+                      strutStyle: StrutStyle.disabled,
+                      style: TextStyle(
+                        color: isFocused ? Colors.white : null,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        ),
+          );
+        }),
       ),
     );
   }
@@ -470,6 +486,7 @@ class _BodySettingsState extends State<BodySettings> {
             DialogAction(
               label: "Confirm",
               callback: () {
+                print("confirm pressed");
                 text = controller.text;
               },
               popReturn: true,

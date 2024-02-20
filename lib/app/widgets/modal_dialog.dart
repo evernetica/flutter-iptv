@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:giptv_flutter/app/widgets/button_tv_compatible.dart';
 import 'package:giptv_flutter/misc/app_colors.dart';
 
 enum _DialogTypes {
@@ -276,8 +277,9 @@ class _ModalDialogState extends State<ModalDialog> {
                                         padding: EdgeInsets.only(
                                           left: (i > 0) ? 16.0 : 0.0,
                                         ),
-                                        child: ElevatedButton(
-                                          onPressed: () {
+                                        child: ButtonTvCompatible(
+                                          isButtonElevated: true,
+                                          callback: () {
                                             actions[i].callback?.call();
                                             if (actions[i].shouldPop) {
                                               _pop(actions[i].popReturn);

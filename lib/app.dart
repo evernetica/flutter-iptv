@@ -38,6 +38,7 @@ class App extends StatelessWidget {
       home: Shortcuts(
         shortcuts: <LogicalKeySet, Intent>{
           LogicalKeySet(LogicalKeyboardKey.select): const ActivateIntent(),
+          LogicalKeySet(LogicalKeyboardKey.goBack): const DismissIntent(),
         },
         child: const Dashboard(),
       ),

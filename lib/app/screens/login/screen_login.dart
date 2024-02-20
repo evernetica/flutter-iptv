@@ -1,16 +1,15 @@
 import 'dart:io';
-import 'dart:math';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:format/format.dart';
 import 'package:get_ip_address/get_ip_address.dart';
 import 'package:giptv_flutter/app/dashboard/cubit/cubit_dashboard.dart';
 import 'package:giptv_flutter/app/screens/login/cubit/cubit_login.dart';
 import 'package:giptv_flutter/app/screens/login/cubit/state_login.dart';
 import 'package:giptv_flutter/app/screens/screen_base.dart';
+import 'package:giptv_flutter/app/widgets/button_tv_compatible.dart';
 import 'package:giptv_flutter/domain/entities/entity_user.dart';
 import 'package:giptv_flutter/domain/providers/provider_api_interactions.dart';
 import 'package:giptv_flutter/misc/app_colors.dart';
@@ -34,6 +33,11 @@ class ScreenLogin extends StatelessWidget {
               context,
               listen: false,
             ).checkBannedIp(await ipAddress);
+
+            ServicesBinding.instance.keyboard.addHandler((key) {
+              print("pressed: ${key.logicalKey}");
+              return true;
+            });
 
             if (isBanned) {
               bloc.goToBanStage();
@@ -150,16 +154,15 @@ class ScreenLogin extends StatelessWidget {
                     const SizedBox(height: 16.0),
                     Center(
                       child: _buildDefaultContainer(
-                        child: TextButton(
+                        child: ButtonTvCompatible(
                           focusNode: goButton,
-                          onPressed: () async {
+                          callback: () async {
                             print(controller.text);
                             EntityUser user =
                                 await Provider.of<ProviderApiInteractions>(
                               context,
                               listen: false,
                             ).login(controller.text);
-
 
                             print(context.mounted);
                             if (context.mounted) {

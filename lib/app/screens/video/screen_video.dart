@@ -148,49 +148,55 @@ class _ScreenVideoState extends State<ScreenVideo> {
         child: ListView(
           children: List.generate(
             widget.channels.length,
-            (i) => GestureDetector(
-              onTap: () {
-                setState(() {
-                  videoUrl = widget.channels[i].videoUrl;
-                  title = widget.channels[i].name;
-                  channelId = "${widget.channels[i].epgChannelId}";
-                  isFavourite = widget.favChannels.any(
-                    (f) => f.linkChannel == widget.channels[i].videoUrl,
-                  );
+            (i) => Material(
+              color: Colors.transparent,
+              child: InkWell(
+                overlayColor: MaterialStateColor.resolveWith(
+                  (_) => AppColors.fgMain,
+                ),
+                onTap: () {
+                  setState(() {
+                    videoUrl = widget.channels[i].videoUrl;
+                    title = widget.channels[i].name;
+                    channelId = "${widget.channels[i].epgChannelId}";
+                    isFavourite = widget.favChannels.any(
+                      (f) => f.linkChannel == widget.channels[i].videoUrl,
+                    );
 
-                  controller.dispose();
-                  controller = VideoPlayerController.networkUrl(
-                    Uri.parse(widget.channels[i].videoUrl),
-                  );
+                    controller.dispose();
+                    controller = VideoPlayerController.networkUrl(
+                      Uri.parse(widget.channels[i].videoUrl),
+                    );
 
-                  init = controller.initialize();
-                });
-              },
-              child: Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Image.network(
-                      widget.channels[i].streamIcon,
-                      width: 32.0,
-                      height: 32.0,
-                      errorBuilder: (_, __, ___) => Image.asset(
-                        "assets/images/giptv_nobg.png",
+                    init = controller.initialize();
+                  });
+                },
+                child: Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Image.network(
+                        widget.channels[i].streamIcon,
                         width: 32.0,
                         height: 32.0,
+                        errorBuilder: (_, __, ___) => Image.asset(
+                          "assets/images/giptv_nobg.png",
+                          width: 32.0,
+                          height: 32.0,
+                        ),
                       ),
                     ),
-                  ),
-                  Expanded(
-                    child: Text(
-                      widget.channels[i].name,
-                      maxLines: 1,
-                      softWrap: false,
-                      style: const TextStyle(fontSize: 20),
-                      overflow: TextOverflow.fade,
+                    Expanded(
+                      child: Text(
+                        widget.channels[i].name,
+                        maxLines: 1,
+                        softWrap: false,
+                        style: const TextStyle(fontSize: 20),
+                        overflow: TextOverflow.fade,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:giptv_flutter/app/screens/main/cubit/cubit_main.dart';
 import 'package:giptv_flutter/app/screens/main/cubit/state_main.dart';
 import 'package:giptv_flutter/app/screens/main/body_content/body_activation.dart';
@@ -9,6 +11,7 @@ import 'package:giptv_flutter/app/screens/main/widgets/drawer_menu.dart';
 import 'package:giptv_flutter/app/screens/screen_base.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:giptv_flutter/app/widgets/inkwell_button.dart';
 import 'package:giptv_flutter/domain/entities/entity_user.dart';
 import 'package:giptv_flutter/domain/providers/provider_api_interactions.dart';
 import 'package:giptv_flutter/misc/app_colors.dart';
@@ -16,12 +19,15 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ScreenMain extends StatelessWidget {
-  const ScreenMain({
+  ScreenMain({
     super.key,
     required this.initialUser,
   });
 
   final EntityUser initialUser;
+  final StreamController<String> searchController =
+      StreamController.broadcast();
+  final TextEditingController searchFieldController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +35,10 @@ class ScreenMain extends StatelessWidget {
       context,
       listen: false,
     );
+
+    searchFieldController.addListener(() {
+      searchController.add(searchFieldController.text);
+    });
 
     return BlocProvider(
       create: (_) => CubitMain(),
@@ -53,9 +63,16 @@ class ScreenMain extends StatelessWidget {
             },
             child: BlocBuilder<CubitMain, StateMain>(
               builder: (context, state) {
+                if (!state.showSearchField) searchFieldController.text = "";
+
                 return OrientationBuilder(
                   builder: (context, orientation) {
                     bool isDrawerClosable = orientation == Orientation.portrait;
+                    bool isSearchBarRequired = [
+                      StagesScreenMain.liveTv,
+                      StagesScreenMain.radio,
+                      StagesScreenMain.favorites,
+                    ].contains(state.stage);
 
                     if (!isDrawerClosable) {
                       if (MediaQuery.of(context).size.width < 800) {
@@ -113,45 +130,9 @@ class ScreenMain extends StatelessWidget {
 
                     return ScreenBase(
                       appBar: isDrawerClosable
-                          ? AppBar(
-                              backgroundColor: Colors.transparent,
-                              shadowColor: Colors.transparent,
-                              scrolledUnderElevation: 0.0,
-                              iconTheme: const IconThemeData(
-                                color: AppColors.fgMain,
-                              ),
-                              title: Text(
-                                _getTitle(state.stage),
-                                style: const TextStyle(
-                                  color: AppColors.bgMainLighter80,
-                                ),
-                              ),
-                              centerTitle: true,
-                              leading: state.channels.isNotEmpty ||
-                                      state.showBackButton
-                                  ? Material(
-                                      color: Colors.transparent,
-                                      shape: const CircleBorder(),
-                                      clipBehavior: Clip.hardEdge,
-                                      child: InkWell(
-                                        onTap: bloc.clearChannels,
-                                        overlayColor:
-                                            MaterialStateColor.resolveWith(
-                                          (_) => Colors.white24,
-                                        ),
-                                        borderRadius:
-                                            BorderRadius.circular(9999),
-                                        child: const Padding(
-                                          padding: EdgeInsets.all(8.0),
-                                          child: Icon(
-                                            Icons.arrow_back,
-                                            color: Colors.white,
-                                            size: 32.0,
-                                          ),
-                                        ),
-                                      ),
-                                    )
-                                  : null,
+                          ? _buildAppBar(
+                              bloc,
+                              state,
                             )
                           : null,
                       drawer: isDrawerClosable ? drawer : null,
@@ -160,61 +141,24 @@ class ScreenMain extends StatelessWidget {
                           if (!isDrawerClosable) drawer,
                           Expanded(
                             flex: 3,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16.0,
-                              ),
-                              child: Builder(
-                                builder: (context) {
-                                  switch (state.stage) {
-                                    case StagesScreenMain.liveTv:
-                                      return BodyLiveTv(
-                                        categories: state.categories,
-                                        channels: state.channels,
-                                        categoryCallback: (catId) =>
-                                            bloc.getChannels(
+                            child: Builder(
+                              builder: (context) {
+                                if (isSearchBarRequired && !isDrawerClosable) {
+                                  return Column(
+                                    children: [
+                                      _buildAppBar(bloc, state),
+                                      Expanded(
+                                        child: _buildBody(
+                                          bloc,
+                                          state,
                                           providerApi,
-                                          catId,
-                                          state.categories
-                                              .firstWhere(
-                                                (c) => c.categoryId == catId,
-                                              )
-                                              .categoryName,
                                         ),
-                                        favChannels: state.favorites,
-                                        user: state.user,
-                                        back: bloc.clearChannels,
-                                        bloc: bloc,
-                                      );
-                                    case StagesScreenMain.radio:
-                                      return BodyRadio(
-                                        radioStations: state.radioStations,
-                                      );
-                                    case StagesScreenMain.favorites:
-                                      return BodyFavorites(
-                                        favorites: state.favorites,
-                                        user: state.user,
-                                      );
-                                    case StagesScreenMain.activation:
-                                      return BodyActivation(
-                                        user: state.user,
-                                      );
-                                    case StagesScreenMain.settings:
-                                      return BodySettings(
-                                        user: state.user,
-                                        bloc: bloc,
-                                      );
-                                    default:
-                                      return const Center(
-                                        child: Icon(
-                                          Icons.live_tv_outlined,
-                                          color: AppColors.bgMainLighter20,
-                                          size: 128.0,
-                                        ),
-                                      );
-                                  }
-                                },
-                              ),
+                                      ),
+                                    ],
+                                  );
+                                }
+                                return _buildBody(bloc, state, providerApi);
+                              },
                             ),
                           ),
                         ],
@@ -225,6 +169,121 @@ class ScreenMain extends StatelessWidget {
               },
             ),
           );
+        },
+      ),
+    );
+  }
+
+  AppBar _buildAppBar(CubitMain bloc, StateMain state) {
+    return AppBar(
+      backgroundColor: Colors.transparent,
+      shadowColor: Colors.transparent,
+      scrolledUnderElevation: 0.0,
+      iconTheme: const IconThemeData(
+        color: AppColors.fgMain,
+      ),
+      centerTitle: true,
+      title: state.showSearchField
+          ? Material(
+              color: Colors.white,
+              child: TextField(
+                controller: searchFieldController,
+              ),
+            )
+          : Text(
+              _getTitle(state.stage),
+              style: const TextStyle(
+                color: AppColors.bgMainLighter80,
+              ),
+            ),
+      leading: state.channels.isNotEmpty || state.showBackButton
+          ? InkWellButton(
+              backgroundColor: Colors.transparent,
+              onTap: bloc.clearChannels,
+              icon: Icons.arrow_back,
+            )
+          : null,
+      actions: [
+        InkWellButton(
+          onTap: () {
+            searchFieldController.text = "";
+
+            bloc.setSearchFieldVisibility(
+              !state.showSearchField,
+            );
+          },
+          icon: Icons.search,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildBody(
+    CubitMain bloc,
+    StateMain state,
+    ProviderApiInteractions providerApi,
+  ) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 16.0,
+      ),
+      child: Builder(
+        builder: (context) {
+          switch (state.stage) {
+            case StagesScreenMain.liveTv:
+              return BodyLiveTv(
+                searchController: searchController,
+                initialSearchQuery:
+                    state.showSearchField ? searchFieldController.text : "",
+                categories: state.categories,
+                channels: state.channels,
+                categoryCallback: (catId) => bloc.getChannels(
+                  providerApi,
+                  catId,
+                  state.categories
+                      .firstWhere(
+                        (c) => c.categoryId == catId,
+                      )
+                      .categoryName,
+                ),
+                favChannels: state.favorites,
+                user: state.user,
+                back: bloc.clearChannels,
+                bloc: bloc,
+              );
+            case StagesScreenMain.radio:
+              return BodyRadio(
+                searchController: searchController,
+                initialSearchQuery:
+                    state.showSearchField ? searchFieldController.text : "",
+                radioStations: state.radioStations,
+              );
+            case StagesScreenMain.favorites:
+              return BodyFavorites(
+                searchController: searchController,
+                initialSearchQuery:
+                    state.showSearchField ? searchFieldController.text : "",
+                favorites: state.favorites,
+                user: state.user,
+              );
+            case StagesScreenMain.activation:
+              return BodyActivation(
+                user: state.user,
+              );
+            case StagesScreenMain.settings:
+              return BodySettings(
+                user: state.user,
+                bloc: bloc,
+              );
+            default:
+              return const Center(
+                child: Icon(
+                  Icons.live_tv_outlined,
+                  color: AppColors.bgMainLighter20,
+                  size: 128.0,
+                ),
+              );
+          }
         },
       ),
     );

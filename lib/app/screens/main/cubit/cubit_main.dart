@@ -12,6 +12,7 @@ class CubitMain extends Cubit<StateMain> {
       state.copyWith(
         channels: [],
         showBackButton: false,
+        showSearchField: false,
       ),
     );
   }
@@ -37,8 +38,6 @@ class CubitMain extends Cubit<StateMain> {
     String categoryId,
     String categoryName,
   ) async {
-
-
     print("GET :: $categoryId :: $categoryName");
 
     List<EntityChannel> channels = await provider.getChannelsByCategory(
@@ -49,13 +48,19 @@ class CubitMain extends Cubit<StateMain> {
 
     if (!state.showBackButton) return;
 
-    emit(state.copyWith(channels: channels));
+    emit(
+      state.copyWith(
+        channels: channels,
+        showSearchField: false,
+      ),
+    );
   }
 
   Future getRadioStations(ProviderApiInteractions provider, String code) async {
     emit(
       state.copyWith(
         radioStations: await provider.getRadioStations(code),
+        showSearchField: false,
       ),
     );
   }
@@ -64,6 +69,7 @@ class CubitMain extends Cubit<StateMain> {
     emit(
       state.copyWith(
         favorites: await provider.getFavorites(idSerial),
+        showSearchField: false,
       ),
     );
   }
@@ -79,6 +85,7 @@ class CubitMain extends Cubit<StateMain> {
         channels: [],
         categories: [],
         showBackButton: false,
+        showSearchField: false,
       ),
     );
     await getCategories(provider);
@@ -89,6 +96,7 @@ class CubitMain extends Cubit<StateMain> {
       state.copyWith(
         stage: StagesScreenMain.radio,
         showBackButton: false,
+        showSearchField: false,
       ),
     );
   }
@@ -98,6 +106,7 @@ class CubitMain extends Cubit<StateMain> {
       state.copyWith(
         stage: StagesScreenMain.settings,
         showBackButton: false,
+        showSearchField: false,
       ),
     );
   }
@@ -111,6 +120,7 @@ class CubitMain extends Cubit<StateMain> {
       state.copyWith(
         stage: StagesScreenMain.favorites,
         showBackButton: false,
+        showSearchField: false,
       ),
     );
   }
@@ -120,11 +130,16 @@ class CubitMain extends Cubit<StateMain> {
       state.copyWith(
         stage: StagesScreenMain.activation,
         showBackButton: false,
+        showSearchField: false,
       ),
     );
   }
 
   void setBackButtonVisibility(bool newState) {
     emit(state.copyWith(showBackButton: newState));
+  }
+
+  void setSearchFieldVisibility(bool newState) {
+    emit(state.copyWith(showSearchField: newState));
   }
 }

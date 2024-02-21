@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:giptv_flutter/app/dashboard/cubit/cubit_dashboard.dart';
 import 'package:giptv_flutter/app/screens/main/cubit/cubit_main.dart';
@@ -22,6 +24,8 @@ class BodyLiveTv extends StatefulWidget {
     required this.categoryCallback,
     required this.back,
     required this.bloc,
+    required this.searchController,
+    this.initialSearchQuery = "",
   });
 
   final List<EntityCategory> categories;
@@ -31,6 +35,9 @@ class BodyLiveTv extends StatefulWidget {
   final Function(String) categoryCallback;
   final Function() back;
   final CubitMain bloc;
+  final String initialSearchQuery;
+
+  final StreamController<String> searchController;
 
   @override
   State<BodyLiveTv> createState() => _BodyLiveTvState();
@@ -40,9 +47,46 @@ class _BodyLiveTvState extends State<BodyLiveTv> {
   FocusNode backButtonFocus = FocusNode();
   bool backButtonPressed = false;
   bool isLoadingChannels = false;
+  late String searchQuery = widget.initialSearchQuery;
+
+  @override
+  void initState() {
+    super.initState();
+
+    widget.searchController.stream.listen(
+      (event) {
+        setState(() {
+          searchQuery = event.trim();
+        });
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    List<EntityChannel> finalChannels = [];
+    List<EntityCategory> finalCategories = [];
+
+    if (searchQuery.isEmpty) {
+      finalChannels.addAll(widget.channels);
+      finalCategories.addAll(widget.categories);
+    } else {
+      finalChannels.addAll(
+        widget.channels.where(
+          (element) => element.name.toLowerCase().contains(
+                searchQuery.toLowerCase(),
+              ),
+        ),
+      );
+      finalCategories.addAll(
+        widget.categories.where(
+          (element) => element.categoryName.toLowerCase().contains(
+                searchQuery.toLowerCase(),
+              ),
+        ),
+      );
+    }
+
     if (isLoadingChannels) {
       return Shimmer(
         gradient: const LinearGradient(
@@ -119,11 +163,11 @@ class _BodyLiveTvState extends State<BodyLiveTv> {
     if (widget.channels.isNotEmpty) {
       return ChannelListListView(
         channels: List.generate(
-          widget.channels.length,
+          finalChannels.length,
           (i) {
             bool isForbidden = (widget.user.isParentalControlActive == "1")
                 ? AppStrings.adultKeywords.any(
-                    (keyword) => widget.channels[i].name.toLowerCase().contains(
+                    (keyword) => finalChannels[i].name.toLowerCase().contains(
                           keyword,
                         ),
                   )
@@ -132,8 +176,8 @@ class _BodyLiveTvState extends State<BodyLiveTv> {
             return MediaContentButton(
               title: isForbidden
                   ? "This Channel is Protected"
-                  : widget.channels[i].name,
-              iconUrl: widget.channels[i].streamIcon,
+                  : finalChannels[i].name,
+              iconUrl: finalChannels[i].streamIcon,
               callback: () {
                 if (isForbidden) return;
 
@@ -141,11 +185,11 @@ class _BodyLiveTvState extends State<BodyLiveTv> {
                   context,
                   listen: false,
                 ).openVideoPage(
-                  videoUrl: widget.channels[i].videoUrl,
-                  title: widget.channels[i].name,
-                  channelId: "${widget.channels[i].epgChannelId}",
+                  videoUrl: finalChannels[i].videoUrl,
+                  title: finalChannels[i].name,
+                  channelId: "${finalChannels[i].epgChannelId}",
                   isFavourite: widget.favChannels.any(
-                    (f) => f.linkChannel == widget.channels[i].videoUrl,
+                    (f) => f.linkChannel == finalChannels[i].videoUrl,
                   ),
                   user: widget.user,
                   channels: widget.channels,
@@ -161,15 +205,14 @@ class _BodyLiveTvState extends State<BodyLiveTv> {
     if (widget.categories.isNotEmpty) {
       return ListView(
         children: List.generate(
-          widget.categories.length,
+          finalCategories.length,
           (i) {
             bool isForbidden = (widget.user.isParentalControlActive == "1")
                 ? AppStrings.adultKeywords.any(
-                    (keyword) => widget.categories[i].categoryName
-                        .toLowerCase()
-                        .contains(
-                          keyword,
-                        ),
+                    (keyword) =>
+                        finalCategories[i].categoryName.toLowerCase().contains(
+                              keyword,
+                            ),
                   )
                 : false;
 
@@ -188,8 +231,7 @@ class _BodyLiveTvState extends State<BodyLiveTv> {
                     isLoadingChannels = true;
                   });
 
-                  await widget
-                      .categoryCallback(widget.categories[i].categoryId);
+                  await widget.categoryCallback(finalCategories[i].categoryId);
 
                   if (!context.mounted) return;
 
@@ -211,7 +253,7 @@ class _BodyLiveTvState extends State<BodyLiveTv> {
                         Text(
                           isForbidden
                               ? "This Category Content is Protected"
-                              : widget.categories[i].categoryName,
+                              : finalCategories[i].categoryName,
                           style: const TextStyle(
                             color: Colors.white,
                           ),

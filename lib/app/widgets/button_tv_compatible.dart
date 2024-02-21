@@ -24,7 +24,9 @@ class _ButtonTvCompatibleState extends State<ButtonTvCompatible> {
   int? timestamp;
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
+
     widget.focusNode.onKeyEvent = (node, event) {
       if (event.logicalKey.keyId != 0x10000050c) return KeyEventResult.ignored;
 
@@ -33,7 +35,10 @@ class _ButtonTvCompatibleState extends State<ButtonTvCompatible> {
       widget.callback?.call();
       return KeyEventResult.handled;
     };
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return widget.isButtonElevated
         ? ElevatedButton(
             focusNode: widget.focusNode,

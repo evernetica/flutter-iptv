@@ -4,6 +4,7 @@ import 'package:giptv_flutter/domain/entities/entity_fav_channel.dart';
 import 'package:giptv_flutter/domain/entities/entity_radio_station.dart';
 import 'package:giptv_flutter/domain/entities/entity_user.dart';
 import 'package:giptv_flutter/domain/entities/entity_website.dart';
+import 'package:giptv_flutter/domain/repo_response.dart';
 import 'package:giptv_flutter/domain/repositories_i/i_repository_api_interactions.dart';
 
 class ProviderApiInteractions {
@@ -32,7 +33,16 @@ class ProviderApiInteractions {
   Future<bool> checkBannedIp(String ipAddress) =>
       _repository.checkBannedIp(ipAddress);
 
-  Future<EntityUser> login(String code) => _repository.login(code);
+  /// Device types [deviceType]:
+  /// phone,
+  /// tablet,
+  /// tv
+  Future<RepoResponse<EntityUser>> login(
+    String code,
+  ) =>
+      _repository.login(
+        code,
+      );
 
   Future<List<EntityCategory>> getCategories(String code) =>
       _repository.getCategories(code);
@@ -113,5 +123,27 @@ class ProviderApiInteractions {
   ) =>
       _repository.getEpg(
         code,
+      );
+
+  Future updateDeviceId(
+    String code,
+    String deviceId,
+    String deviceType,
+  ) =>
+      _repository.updateDeviceId(
+        code,
+        deviceId,
+        deviceType,
+      );
+
+  Future setRegisteredUser(
+    String code,
+    String trialStartTime,
+    String trialFinishTime,
+  ) =>
+      _repository.setRegisteredUser(
+        code,
+        trialStartTime,
+        trialFinishTime,
       );
 }

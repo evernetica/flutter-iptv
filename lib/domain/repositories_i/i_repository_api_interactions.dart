@@ -4,6 +4,7 @@ import 'package:giptv_flutter/domain/entities/entity_fav_channel.dart';
 import 'package:giptv_flutter/domain/entities/entity_radio_station.dart';
 import 'package:giptv_flutter/domain/entities/entity_user.dart';
 import 'package:giptv_flutter/domain/entities/entity_website.dart';
+import 'package:giptv_flutter/domain/repo_response.dart';
 
 abstract class IRepositoryApiInteractions {
   Future<String> register({
@@ -17,7 +18,9 @@ abstract class IRepositoryApiInteractions {
 
   Future<bool> checkBannedIp(String ipAddress);
 
-  Future<EntityUser> login(String code);
+  Future<RepoResponse<EntityUser>> login(
+    String code,
+  );
 
   Future<List<EntityCategory>> getCategories(String code);
 
@@ -69,5 +72,17 @@ abstract class IRepositoryApiInteractions {
 
   Future getEpg(
     String code,
+  );
+
+  Future updateDeviceId(
+    String code,
+    String deviceId,
+    String deviceType,
+  );
+
+  Future setRegisteredUser(
+    String code,
+    String trialStartTime,
+    String trialFinishTime,
   );
 }

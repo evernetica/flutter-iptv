@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:math';
 
+//TODO: REMOVE MOCKED RESPONSES AFTER THE API IS FIXED
+
 import 'package:flutter_hls_parser/flutter_hls_parser.dart';
 import 'package:format/format.dart';
 import 'package:giptv_flutter/data/models/model_file_link.dart';
@@ -11,6 +13,7 @@ import 'package:giptv_flutter/domain/entities/entity_fav_channel.dart';
 import 'package:giptv_flutter/domain/entities/entity_radio_station.dart';
 import 'package:giptv_flutter/domain/entities/entity_user.dart';
 import 'package:giptv_flutter/domain/entities/entity_website.dart';
+import 'package:giptv_flutter/domain/repo_response.dart';
 import 'package:giptv_flutter/domain/repositories_i/i_repository_api_interactions.dart';
 import 'package:http/http.dart';
 
@@ -124,6 +127,7 @@ class ImplRepositoryGiptvApiInteractions implements IRepositoryApiInteractions {
 
   @override
   Future<bool> checkBannedIp(String ipAddress) async {
+    return false;
     Request request = Request(
       "GET",
       Uri(
@@ -148,7 +152,26 @@ class ImplRepositoryGiptvApiInteractions implements IRepositoryApiInteractions {
   }
 
   @override
-  Future<EntityUser> login(String code) async {
+  Future<RepoResponse<EntityUser>> login(
+    String code,
+  ) async {
+    // return const EntityUser(
+    //   code: "11775",
+    //   deviceId: "",
+    //   email: "",
+    //   fullName: "",
+    //   ip: "",
+    //   registered: "1",
+    //   idSerial: "",
+    //   purchase: "1",
+    //   trialStartTime: "",
+    //   trialFinishTime: "",
+    //   deviceId2: "",
+    //   deviceId3: "",
+    //   isParentalControlActive: "",
+    //   passParentalControl: "",
+    // );
+
     Request request = Request(
       "GET",
       Uri(
@@ -192,10 +215,14 @@ class ImplRepositoryGiptvApiInteractions implements IRepositoryApiInteractions {
 
     print(user);
 
-    return user;
+    return RepoResponse(
+      isSuccessful: true,
+      output: user,
+    );
   }
 
   Future _getCustomLink(String code) async {
+    return;
     Request request = Request(
       "GET",
       Uri(
@@ -335,6 +362,17 @@ class ImplRepositoryGiptvApiInteractions implements IRepositoryApiInteractions {
 
   @override
   Future<List<EntityCategory>> getCategories(String code) async {
+    return [
+      ...List.generate(
+        10,
+        (i) => EntityCategory(
+          categoryId: '$i',
+          categoryName: 'Category $i',
+          parentId: -1,
+        ),
+      ),
+    ];
+
     if (listSource == CustomListSource.notInitialized) {
       await _getCustomLink(code);
     }
@@ -425,6 +463,29 @@ class ImplRepositoryGiptvApiInteractions implements IRepositoryApiInteractions {
     String categoryName,
     String code,
   ) async {
+    return [
+      ...List.generate(
+        16,
+        (i) => EntityChannel(
+          num: i,
+          name: 'Channel $i',
+          streamType: '',
+          streamId: 1,
+          streamIcon: '',
+          epgChannelId: '',
+          added: '',
+          customSid: '',
+          tvArchive: 0,
+          directSource: '',
+          tvArchiveDuration: 0,
+          categoryId: '',
+          categoryIds: [],
+          thumbnail: '',
+          videoUrl: '',
+        ),
+      ),
+    ];
+
     if (listSource == CustomListSource.notInitialized) {
       await _getCustomLink(code);
     }
@@ -866,9 +927,88 @@ class ImplRepositoryGiptvApiInteractions implements IRepositoryApiInteractions {
     print("EPG:");
     print(response.body);
   }
+
+  @override
+  Future updateDeviceId(
+    String code,
+    String deviceId,
+    String deviceType,
+  ) async {
+    String id = "0";
+
+    switch (deviceId) {
+      case ("phone"):
+        id = "1";
+        break;
+      case ("tv"):
+        id = "2";
+        break;
+      case ("tablet"):
+        id = "3";
+        break;
+    }
+
+    Request request = Request(
+      "POST",
+      Uri(
+        scheme: "https",
+        host: "giptv.ro",
+        path: "admin/api/serials/setDeviceId.php",
+      ),
+    );
+
+    request.headers.addAll(
+      {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    );
+
+    request.bodyFields = {
+      'code': code,
+      'deviceId': deviceId,
+      'id': id,
+    };
+
+    Response response = await Response.fromStream(await request.send());
+  }
+
+  @override
+  Future setRegisteredUser(
+      String code,
+      String trialStartTime,
+      String trialFinishTime,
+      ) async {
+    Request request = Request(
+      "POST",
+      Uri(
+        scheme: "https",
+        host: "giptv.ro",
+        path: "admin/api/serials/setRegisteredUser.php",
+      ),
+    );
+
+    request.headers.addAll(
+      {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    );
+
+    request.bodyFields = {
+      'code': code,
+      'trial_start_time': trialStartTime,
+      'trial_finish_time': trialFinishTime,
+    };
+
+    Response response = await Response.fromStream(await request.send());
+  }
 }
 
 /*
+
+    @FormUrlEncoded
+    @POST("serials/setRegisteredUser.php")
+    Call<ResponsePHP> setRegisteredUser(@Header("Content-Type") String str, @Field("code") String code, @Field("trial_start_time") String trial_start_time,
+                                        @Field("trial_finish_time") String trial_finish_time);
 
 
   legacy:      http://www.iptvrestream.online:88/xmltv.php?username=nicunicu3&password=nicunicu3

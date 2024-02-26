@@ -1,16 +1,11 @@
-# giptv_flutter
+# Flutter TV Example App
 
-A new Flutter project.
+Example app showing possible layout of a streaming app. The same APK works on phones, tablets and Android TV devices
 
-## Getting Started
+## App preview:
+<img src="https://github.com/mobtophop/flutter-tv-example/assets/145994644/d437ab9f-b47b-4934-9873-222f3d233598" height="360"/>
 
-This project is a starting point for a Flutter application.
+<img src="https://github.com/mobtophop/flutter-tv-example/assets/145994644/1d7e8958-1334-4840-8b49-9aff8f0d1cd6" height="360" width="220"/>
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## APK file:
+<a href="https://drive.google.com/file/d/1xoAy3_gLN_LS0MbvE_1UBaU9AfT5_TTF/view?usp=sharing">Google Drive link here!</a>

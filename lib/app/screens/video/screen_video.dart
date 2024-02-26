@@ -38,6 +38,7 @@ class ScreenVideo extends StatefulWidget {
 
 class _ScreenVideoState extends State<ScreenVideo> {
   late String videoUrl = widget.videoUrl;
+  final String mockVideo = "https://content.uplynk.com/channel/aa92b664ac5941de81cd410803329da2.m3u8";
   late String title = widget.title;
   late String channelId = widget.channelId;
   late bool isFavourite = widget.isFavourite;
@@ -52,7 +53,7 @@ class _ScreenVideoState extends State<ScreenVideo> {
     super.initState();
 
     controller = VideoPlayerController.networkUrl(
-      Uri.parse(videoUrl),
+      Uri.parse(mockVideo),
     );
 
     init = controller.initialize();
@@ -165,7 +166,7 @@ class _ScreenVideoState extends State<ScreenVideo> {
 
                     controller.dispose();
                     controller = VideoPlayerController.networkUrl(
-                      Uri.parse(widget.channels[i].videoUrl),
+                      Uri.parse(mockVideo),
                     );
 
                     init = controller.initialize();
@@ -179,10 +180,8 @@ class _ScreenVideoState extends State<ScreenVideo> {
                         widget.channels[i].streamIcon,
                         width: 32.0,
                         height: 32.0,
-                        errorBuilder: (_, __, ___) => Image.asset(
-                          "assets/images/giptv_nobg.png",
-                          width: 32.0,
-                          height: 32.0,
+                        errorBuilder: (_, __, ___) => const FlutterLogo(
+                          size: 32,
                         ),
                       ),
                     ),

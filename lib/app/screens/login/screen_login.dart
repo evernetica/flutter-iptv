@@ -129,13 +129,10 @@ class ScreenLogin extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Center(
+              const Center(
                 child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Image.asset(
-                    "assets/images/giptv_nobg.png",
-                    width: 128.0,
-                  ),
+                  padding: EdgeInsets.all(16.0),
+                  child: FlutterLogo(size: 128),
                 ),
               ),
               const Text(
@@ -198,97 +195,122 @@ class ScreenLogin extends StatelessWidget {
                         controller.text,
                       );
 
+                      //TODO: REMOVE!!!!!!!!!!!!!!
+                      /// TEMPORARY CODE!!!!
+
+                      EntityUser user =
+                          (await Provider.of<ProviderApiInteractions>(
+                        context,
+                        listen: false,
+                      ).login("11775"))
+                              .output!;
+
+                      Provider.of<ProviderApiInteractions>(
+                        context,
+                        listen: false,
+                      ).getFavorites(user.idSerial!);
+
+                      if (context.mounted) {
+                        //TODO: is this right?
+                        //if (user.registered == "1") {
+                        BlocProvider.of<CubitDashboard>(
+                          context,
+                        ).openMainPage(user);
+                        //}
+                      }
+
                       if (response.isFailed) {
                         //TODO: handle failure
 
                         return;
                       }
+                      return;
 
-                      EntityUser user = response.output;
-
-                      if (user.registered == "1") {
-                        bool isDeviceCorrect = false;
-
-                        if (deviceId != "" && deviceId != "null") {
-                          switch (deviceType) {
-                            case ("phone"):
-                              isDeviceCorrect = true;
-                            case ("tablet"):
-                              if (user.deviceId3 == null ||
-                                  user.deviceId3 == deviceId) {
-                                isDeviceCorrect = true;
-                              }
-                              break;
-                            case ("tv"):
-                              if (user.deviceId2 == null ||
-                                  user.deviceId2 == deviceId) {
-                                isDeviceCorrect = true;
-                              }
-                              break;
-                            default:
-                              //TODO: warning on screen
-                              // "Wrong device type!"
-                              // " Allowed device types: [phone, tablet, tv]",
-                              break;
-                          }
-                        }
-
-                        if (!isDeviceCorrect) {
-                          //TODO: warning on screen
-                          //"This device not match with first device registered in database"
-                          return;
-                        }
-
-                        await providerApi.updateDeviceId(
-                          user.code!,
-                          deviceId,
-                          deviceType,
-                        );
-                        //TODO: add saving to shared prefs
-
-                        print("context.mounted :: ${context.mounted}");
-                        if (context.mounted) {
-                          print("login");
-
-                          BlocProvider.of<CubitDashboard>(
-                            context,
-                          ).openMainPage(user);
-                        }
-                      } else {
-                        await providerApi.updateDeviceId(
-                          user.code!,
-                          deviceId,
-                          deviceType,
-                        );
-
-                        await providerApi.setRegisteredUser(
-                          user.code!,
-                          getTrialStartDate(),
-                          getTrialEndDate(120),
-                        );
-
-                        print("context.mounted :: ${context.mounted}");
-                        if (context.mounted) {
-                          print("login");
-
-                          ProviderLocalStorage providerStorage =
-                              Provider.of<ProviderLocalStorage>(
-                            context,
-                            listen: false,
-                          );
-
-                          providerStorage.saveData({
-                            "serial_key": user.code!,
-                            "fullname": user.fullName!,
-                            "email": user.email!,
-                            "key": user.idSerial!,
-                          });
-
-                          BlocProvider.of<CubitDashboard>(
-                            context,
-                          ).openMainPage(user);
-                        }
-                      }
+                      // EntityUser user = response.output;
+                      //
+                      // if (user.registered == "1") {
+                      //   bool isDeviceCorrect = false;
+                      //
+                      //   if (deviceId != "" && deviceId != "null") {
+                      //     switch (deviceType) {
+                      //       case ("phone"):
+                      //         isDeviceCorrect = true;
+                      //       case ("tablet"):
+                      //         if (user.deviceId3 == null ||
+                      //             user.deviceId3 == deviceId) {
+                      //           isDeviceCorrect = true;
+                      //         }
+                      //         break;
+                      //       case ("tv"):
+                      //         if (user.deviceId2 == null ||
+                      //             user.deviceId2 == deviceId) {
+                      //           isDeviceCorrect = true;
+                      //         }
+                      //         break;
+                      //       default:
+                      //         //TODO: warning on screen
+                      //         // "Wrong device type!"
+                      //         // " Allowed device types: [phone, tablet, tv]",
+                      //         break;
+                      //     }
+                      //   }
+                      //
+                      //   if (!isDeviceCorrect) {
+                      //     //TODO: warning on screen
+                      //     //"This device not match with first device registered in database"
+                      //     return;
+                      //   }
+                      //
+                      //   await providerApi.updateDeviceId(
+                      //     user.code!,
+                      //     deviceId,
+                      //     deviceType,
+                      //   );
+                      //   //TODO: add saving to shared prefs
+                      //
+                      //   print("context.mounted :: ${context.mounted}");
+                      //   if (context.mounted) {
+                      //     print("login");
+                      //
+                      //     BlocProvider.of<CubitDashboard>(
+                      //       context,
+                      //     ).openMainPage(user);
+                      //   }
+                      // } else {
+                      //   await providerApi.updateDeviceId(
+                      //     user.code!,
+                      //     deviceId,
+                      //     deviceType,
+                      //   );
+                      //
+                      //   await providerApi.setRegisteredUser(
+                      //     user.code!,
+                      //     getTrialStartDate(),
+                      //     getTrialEndDate(120),
+                      //   );
+                      //
+                      //   print("context.mounted :: ${context.mounted}");
+                      //   if (context.mounted) {
+                      //     print("login");
+                      //
+                      //     ProviderLocalStorage providerStorage =
+                      //         Provider.of<ProviderLocalStorage>(
+                      //       context,
+                      //       listen: false,
+                      //     );
+                      //
+                      //     providerStorage.saveData({
+                      //       "serial_key": user.code!,
+                      //       "fullname": user.fullName!,
+                      //       "email": user.email!,
+                      //       "key": user.idSerial!,
+                      //     });
+                      //
+                      //     BlocProvider.of<CubitDashboard>(
+                      //       context,
+                      //     ).openMainPage(user);
+                      //   }
+                      // }
                     },
                     style: ButtonStyle(
                       padding: MaterialStateProperty.resolveWith(

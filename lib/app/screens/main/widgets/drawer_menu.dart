@@ -49,8 +49,8 @@ class DrawerMenu extends Drawer {
                   aspectRatio: 3,
                   child: Align(
                     alignment: Alignment.topLeft,
-                    child: Image(
-                      image: AssetImage("assets/images/giptv_nobg.png"),
+                    child: FlutterLogo(
+                      size: 96,
                     ),
                   ),
                 ),

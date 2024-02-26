@@ -155,22 +155,25 @@ class ImplRepositoryGiptvApiInteractions implements IRepositoryApiInteractions {
   Future<RepoResponse<EntityUser>> login(
     String code,
   ) async {
-    // return const EntityUser(
-    //   code: "11775",
-    //   deviceId: "",
-    //   email: "",
-    //   fullName: "",
-    //   ip: "",
-    //   registered: "1",
-    //   idSerial: "",
-    //   purchase: "1",
-    //   trialStartTime: "",
-    //   trialFinishTime: "",
-    //   deviceId2: "",
-    //   deviceId3: "",
-    //   isParentalControlActive: "",
-    //   passParentalControl: "",
-    // );
+    return RepoResponse(
+      isSuccessful: true,
+      output: const EntityUser(
+        code: "00000",
+        deviceId: "",
+        email: "example@email.com",
+        fullName: "Example Preview",
+        ip: "",
+        registered: "1",
+        idSerial: "",
+        purchase: "1",
+        trialStartTime: "",
+        trialFinishTime: "",
+        deviceId2: "",
+        deviceId3: "",
+        isParentalControlActive: "",
+        passParentalControl: "",
+      ),
+    );
 
     Request request = Request(
       "GET",
@@ -974,10 +977,10 @@ class ImplRepositoryGiptvApiInteractions implements IRepositoryApiInteractions {
 
   @override
   Future setRegisteredUser(
-      String code,
-      String trialStartTime,
-      String trialFinishTime,
-      ) async {
+    String code,
+    String trialStartTime,
+    String trialFinishTime,
+  ) async {
     Request request = Request(
       "POST",
       Uri(

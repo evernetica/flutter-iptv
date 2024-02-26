@@ -94,12 +94,14 @@ class _ScreenRadioState extends State<ScreenRadio> {
                   ),
                 ),
               ),
-              Expanded(
+              const Expanded(
                 flex: 2,
                 child: Center(
                   child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Image.asset('assets/images/radio_logo.png'),
+                    padding: EdgeInsets.all(16.0),
+                    child: FlutterLogo(
+                      size: 256.0,
+                    ),
                   ),
                 ),
               ),

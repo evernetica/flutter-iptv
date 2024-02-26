@@ -7,7 +7,7 @@ class MediaContentButton extends StatelessWidget {
     required this.title,
     required this.iconUrl,
     required this.callback,
-    this.fallbakcAssetIcon = "assets/images/giptv_nobg.png",
+    this.fallbakcAssetIcon = "",
   });
 
   static const double defaultWidth = 120.0;
@@ -49,9 +49,9 @@ class MediaContentButton extends StatelessWidget {
                 iconUrl,
                 width: 64.0,
                 height: 64.0,
-                errorBuilder: (_, __, ___) => Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Image.asset(fallbakcAssetIcon),
+                errorBuilder: (_, __, ___) => const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: FlutterLogo(),
                 ),
               ),
             ),

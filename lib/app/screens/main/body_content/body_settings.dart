@@ -147,25 +147,13 @@ class _BodySettingsState extends State<BodySettings> {
               onTap: _messageToSupport,
             ),
             const SizedBox(height: 16.0),
-            Image.asset(
-              'assets/images/giptv_nobg.png',
-              width: 64.0,
-              height: 64.0,
-            ),
+            const FlutterLogo(size: 64.0),
             const SizedBox(height: 16.0),
             Center(
               child: Text(
                 "version $version",
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
-                  color: AppColors.bgMainLighter20,
-                ),
-              ),
-            ),
-            const Center(
-              child: Text(
-                "© Copyright 2023 NetGip Ltd . All rights Reserved.",
-                style: TextStyle(
                   color: AppColors.bgMainLighter20,
                 ),
               ),

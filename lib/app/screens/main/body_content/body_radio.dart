@@ -41,7 +41,13 @@ class _BodyRadioState extends State<BodyRadio> {
 
   @override
   Widget build(BuildContext context) {
-    List<EntityRadioStation> finalStations = [];
+    List<EntityRadioStation> finalStations = [
+      EntityRadioStation(
+        radioName: 'Test Radio FM',
+        radioImgLink: '',
+        radioStreamUrl: '',
+      ),
+    ];
 
     if (searchQuery.isEmpty) {
       finalStations.addAll(widget.radioStations);

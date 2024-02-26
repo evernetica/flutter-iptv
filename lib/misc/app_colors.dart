@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 abstract class AppColors {
   static const Color bgMain = Color.fromARGB(255, 22, 24, 27);
   static const Color bgMain1 = Color.fromARGB(255, 36, 40, 45);
-  static const Color fgMain = Color.fromARGB(255, 239, 35, 60);
+  static const Color fgMain = Color.fromARGB(255, 33, 156, 231);
 
   static const Color bgMainLighter20 = Color.fromARGB(255, 63, 69, 78);
   static const Color bgMainLighter40 = Color.fromARGB(255, 105, 114, 129);

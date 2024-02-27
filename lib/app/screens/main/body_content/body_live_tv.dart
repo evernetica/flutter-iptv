@@ -1,16 +1,16 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:giptv_flutter/app/dashboard/cubit/cubit_dashboard.dart';
-import 'package:giptv_flutter/app/screens/main/cubit/cubit_main.dart';
-import 'package:giptv_flutter/app/screens/main/widgets/channel_list_list_view.dart';
-import 'package:giptv_flutter/app/screens/main/widgets/media_content_button.dart';
-import 'package:giptv_flutter/domain/entities/entity_category.dart';
-import 'package:giptv_flutter/domain/entities/entity_channel.dart';
-import 'package:giptv_flutter/domain/entities/entity_fav_channel.dart';
-import 'package:giptv_flutter/domain/entities/entity_user.dart';
-import 'package:giptv_flutter/misc/app_colors.dart';
-import 'package:giptv_flutter/misc/app_strings.dart';
+import 'package:flutter_iptv/app/dashboard/cubit/cubit_dashboard.dart';
+import 'package:flutter_iptv/app/screens/main/cubit/cubit_main.dart';
+import 'package:flutter_iptv/app/screens/main/widgets/channel_list_list_view.dart';
+import 'package:flutter_iptv/app/screens/main/widgets/media_content_button.dart';
+import 'package:flutter_iptv/domain/entities/entity_category.dart';
+import 'package:flutter_iptv/domain/entities/entity_channel.dart';
+import 'package:flutter_iptv/domain/entities/entity_fav_channel.dart';
+import 'package:flutter_iptv/domain/entities/entity_user.dart';
+import 'package:flutter_iptv/misc/app_colors.dart';
+import 'package:flutter_iptv/misc/app_strings.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 

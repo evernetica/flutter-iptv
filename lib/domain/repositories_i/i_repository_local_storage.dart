@@ -1,4 +1,4 @@
-import 'package:giptv_flutter/domain/repo_response.dart';
+import 'package:flutter_iptv/domain/repo_response.dart';
 
 abstract class IRepositoryLocalStorage {
   Future<RepoResponse> saveData(Map<String, String> data);

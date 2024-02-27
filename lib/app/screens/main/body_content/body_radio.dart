@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:giptv_flutter/app/dashboard/cubit/cubit_dashboard.dart';
-import 'package:giptv_flutter/app/screens/main/widgets/channel_list_list_view.dart';
-import 'package:giptv_flutter/app/screens/main/widgets/media_content_button.dart';
-import 'package:giptv_flutter/domain/entities/entity_radio_station.dart';
+import 'package:flutter_iptv/app/dashboard/cubit/cubit_dashboard.dart';
+import 'package:flutter_iptv/app/screens/main/widgets/channel_list_list_view.dart';
+import 'package:flutter_iptv/app/screens/main/widgets/media_content_button.dart';
+import 'package:flutter_iptv/domain/entities/entity_radio_station.dart';
 import 'package:provider/provider.dart';
 
 class BodyRadio extends StatefulWidget {

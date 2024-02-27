@@ -6,16 +6,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_ip_address/get_ip_address.dart';
-import 'package:giptv_flutter/app/dashboard/cubit/cubit_dashboard.dart';
-import 'package:giptv_flutter/app/screens/login/cubit/cubit_login.dart';
-import 'package:giptv_flutter/app/screens/login/cubit/state_login.dart';
-import 'package:giptv_flutter/app/screens/screen_base.dart';
-import 'package:giptv_flutter/app/widgets/button_tv_compatible.dart';
-import 'package:giptv_flutter/domain/entities/entity_user.dart';
-import 'package:giptv_flutter/domain/providers/provider_api_interactions.dart';
-import 'package:giptv_flutter/domain/providers/provider_local_storage.dart';
-import 'package:giptv_flutter/domain/repo_response.dart';
-import 'package:giptv_flutter/misc/app_colors.dart';
+import 'package:flutter_iptv/app/dashboard/cubit/cubit_dashboard.dart';
+import 'package:flutter_iptv/app/screens/login/cubit/cubit_login.dart';
+import 'package:flutter_iptv/app/screens/login/cubit/state_login.dart';
+import 'package:flutter_iptv/app/screens/screen_base.dart';
+import 'package:flutter_iptv/app/widgets/button_tv_compatible.dart';
+import 'package:flutter_iptv/domain/entities/entity_user.dart';
+import 'package:flutter_iptv/domain/providers/provider_api_interactions.dart';
+import 'package:flutter_iptv/domain/providers/provider_local_storage.dart';
+import 'package:flutter_iptv/domain/repo_response.dart';
+import 'package:flutter_iptv/misc/app_colors.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -49,27 +49,22 @@ class ScreenLogin extends StatelessWidget {
               bloc.goToMainStage();
             }
 
-            // //TODO: REMOVE!!!!!!!!!!!!!!
-            // /// TEMPORARY CODE!!!!
-            //
-            // EntityUser user = await Provider.of<ProviderApiInteractions>(
-            //   context,
-            //   listen: false,
-            // ).login("11775");
-            //
-            // Provider.of<ProviderApiInteractions>(
-            //   context,
-            //   listen: false,
-            // ).getFavorites(user.idSerial!);
-            //
-            // if (context.mounted) {
-            //   //TODO: is this right?
-            //   //if (user.registered == "1") {
-            //     BlocProvider.of<CubitDashboard>(
-            //       context,
-            //     ).openMainPage(user);
-            //   //}
-            // }
+            //TODO: REMOVE!!!!!!!!!!!!!!
+            /// TEMPORARY CODE!!!!
+
+            RepoResponse<EntityUser> user = await Provider.of<ProviderApiInteractions>(
+              context,
+              listen: false,
+            ).login("");
+
+            if (context.mounted) {
+              //TODO: is this right?
+              //if (user.registered == "1") {
+                BlocProvider.of<CubitDashboard>(
+                  context,
+                ).openMainPage(user.output!);
+              //}
+            }
           },
         );
         return BlocBuilder<CubitLogin, StateLogin>(
@@ -136,7 +131,7 @@ class ScreenLogin extends StatelessWidget {
                 ),
               ),
               const Text(
-                "Welcome to Giptv application!"
+                "Welcome to Flutter IPTV application!"
                 " You need an activation code :",
                 textAlign: TextAlign.center,
               ),

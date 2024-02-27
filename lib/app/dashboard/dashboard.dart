@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:giptv_flutter/app/dashboard/cubit/cubit_dashboard.dart';
-import 'package:giptv_flutter/app/dashboard/cubit/state_dashboard.dart';
-import 'package:giptv_flutter/app/screens/login/screen_login.dart';
-import 'package:giptv_flutter/app/screens/main/screen_main.dart';
-import 'package:giptv_flutter/app/screens/radio/screen_radio.dart';
-import 'package:giptv_flutter/app/screens/video/screen_video.dart';
-import 'package:giptv_flutter/data/repositories_impl/impl_repository_giptv_api_interactions.dart';
-import 'package:giptv_flutter/data/repositories_impl/impl_repository_shared_prefs_local_storage.dart';
-import 'package:giptv_flutter/domain/providers/provider_api_interactions.dart';
-import 'package:giptv_flutter/domain/providers/provider_local_storage.dart';
+import 'package:flutter_iptv/app/dashboard/cubit/cubit_dashboard.dart';
+import 'package:flutter_iptv/app/dashboard/cubit/state_dashboard.dart';
+import 'package:flutter_iptv/app/screens/login/screen_login.dart';
+import 'package:flutter_iptv/app/screens/main/screen_main.dart';
+import 'package:flutter_iptv/app/screens/radio/screen_radio.dart';
+import 'package:flutter_iptv/app/screens/video/screen_video.dart';
+import 'package:flutter_iptv/data/repositories_impl/impl_repository_mockdata_api_interactions.dart';
+import 'package:flutter_iptv/data/repositories_impl/impl_repository_shared_prefs_local_storage.dart';
+import 'package:flutter_iptv/domain/providers/provider_api_interactions.dart';
+import 'package:flutter_iptv/domain/providers/provider_local_storage.dart';
 import 'package:provider/provider.dart';
 
 class Dashboard extends StatelessWidget {
@@ -30,7 +30,7 @@ class Dashboard extends StatelessWidget {
               providers: [
                 Provider<ProviderApiInteractions>(
                   create: (_) => ProviderApiInteractions(
-                    repository: ImplRepositoryGiptvApiInteractions(),
+                    repository: ImplRepositoryMockDataApiInteractions(),
                   ),
                 ),
                 Provider<ProviderLocalStorage>(

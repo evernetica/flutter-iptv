@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:giptv_flutter/app/screens/main/widgets/media_content_button.dart';
+import 'package:flutter_iptv/app/screens/main/widgets/media_content_button.dart';
 
 class ChannelListListView extends StatelessWidget {
   const ChannelListListView({

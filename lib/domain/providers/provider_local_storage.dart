@@ -1,5 +1,5 @@
-import 'package:giptv_flutter/domain/repo_response.dart';
-import 'package:giptv_flutter/domain/repositories_i/i_repository_local_storage.dart';
+import 'package:flutter_iptv/domain/repo_response.dart';
+import 'package:flutter_iptv/domain/repositories_i/i_repository_local_storage.dart';
 
 class ProviderLocalStorage {
   ProviderLocalStorage({

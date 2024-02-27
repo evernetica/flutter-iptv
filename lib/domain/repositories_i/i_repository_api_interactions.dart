@@ -1,10 +1,10 @@
-import 'package:giptv_flutter/domain/entities/entity_category.dart';
-import 'package:giptv_flutter/domain/entities/entity_channel.dart';
-import 'package:giptv_flutter/domain/entities/entity_fav_channel.dart';
-import 'package:giptv_flutter/domain/entities/entity_radio_station.dart';
-import 'package:giptv_flutter/domain/entities/entity_user.dart';
-import 'package:giptv_flutter/domain/entities/entity_website.dart';
-import 'package:giptv_flutter/domain/repo_response.dart';
+import 'package:flutter_iptv/domain/entities/entity_category.dart';
+import 'package:flutter_iptv/domain/entities/entity_channel.dart';
+import 'package:flutter_iptv/domain/entities/entity_fav_channel.dart';
+import 'package:flutter_iptv/domain/entities/entity_radio_station.dart';
+import 'package:flutter_iptv/domain/entities/entity_user.dart';
+import 'package:flutter_iptv/domain/entities/entity_website.dart';
+import 'package:flutter_iptv/domain/repo_response.dart';
 
 abstract class IRepositoryApiInteractions {
   Future<String> register({

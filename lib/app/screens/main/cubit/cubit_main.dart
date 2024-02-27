@@ -1,8 +1,8 @@
-import 'package:giptv_flutter/app/screens/main/cubit/state_main.dart';
+import 'package:flutter_iptv/app/screens/main/cubit/state_main.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:giptv_flutter/domain/entities/entity_channel.dart';
-import 'package:giptv_flutter/domain/entities/entity_user.dart';
-import 'package:giptv_flutter/domain/providers/provider_api_interactions.dart';
+import 'package:flutter_iptv/domain/entities/entity_channel.dart';
+import 'package:flutter_iptv/domain/entities/entity_user.dart';
+import 'package:flutter_iptv/domain/providers/provider_api_interactions.dart';
 
 class CubitMain extends Cubit<StateMain> {
   CubitMain() : super(const StateMain());

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:giptv_flutter/domain/entities/entity_user.dart';
-import 'package:giptv_flutter/misc/app_colors.dart';
+import 'package:flutter_iptv/domain/entities/entity_user.dart';
+import 'package:flutter_iptv/misc/app_colors.dart';
 
 class MenuItem {
   MenuItem({

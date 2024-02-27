@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:giptv_flutter/app/widgets/button_tv_compatible.dart';
-import 'package:giptv_flutter/misc/app_colors.dart';
+import 'package:flutter_iptv/app/widgets/button_tv_compatible.dart';
+import 'package:flutter_iptv/misc/app_colors.dart';
 
 enum _DialogTypes {
   yesNo,

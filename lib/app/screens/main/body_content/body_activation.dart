@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:giptv_flutter/domain/entities/entity_user.dart';
+import 'package:flutter_iptv/domain/entities/entity_user.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class BodyActivation extends StatelessWidget {

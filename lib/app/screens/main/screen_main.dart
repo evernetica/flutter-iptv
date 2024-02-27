@@ -1,20 +1,20 @@
 import 'dart:async';
 
-import 'package:giptv_flutter/app/screens/main/cubit/cubit_main.dart';
-import 'package:giptv_flutter/app/screens/main/cubit/state_main.dart';
-import 'package:giptv_flutter/app/screens/main/body_content/body_activation.dart';
-import 'package:giptv_flutter/app/screens/main/body_content/body_favorites.dart';
-import 'package:giptv_flutter/app/screens/main/body_content/body_live_tv.dart';
-import 'package:giptv_flutter/app/screens/main/body_content/body_radio.dart';
-import 'package:giptv_flutter/app/screens/main/body_content/body_settings.dart';
-import 'package:giptv_flutter/app/screens/main/widgets/drawer_menu.dart';
-import 'package:giptv_flutter/app/screens/screen_base.dart';
+import 'package:flutter_iptv/app/screens/main/cubit/cubit_main.dart';
+import 'package:flutter_iptv/app/screens/main/cubit/state_main.dart';
+import 'package:flutter_iptv/app/screens/main/body_content/body_activation.dart';
+import 'package:flutter_iptv/app/screens/main/body_content/body_favorites.dart';
+import 'package:flutter_iptv/app/screens/main/body_content/body_live_tv.dart';
+import 'package:flutter_iptv/app/screens/main/body_content/body_radio.dart';
+import 'package:flutter_iptv/app/screens/main/body_content/body_settings.dart';
+import 'package:flutter_iptv/app/screens/main/widgets/drawer_menu.dart';
+import 'package:flutter_iptv/app/screens/screen_base.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:giptv_flutter/app/widgets/inkwell_button.dart';
-import 'package:giptv_flutter/domain/entities/entity_user.dart';
-import 'package:giptv_flutter/domain/providers/provider_api_interactions.dart';
-import 'package:giptv_flutter/misc/app_colors.dart';
+import 'package:flutter_iptv/app/widgets/inkwell_button.dart';
+import 'package:flutter_iptv/domain/entities/entity_user.dart';
+import 'package:flutter_iptv/domain/providers/provider_api_interactions.dart';
+import 'package:flutter_iptv/misc/app_colors.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 

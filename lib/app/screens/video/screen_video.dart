@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:giptv_flutter/app/screens/screen_base.dart';
-import 'package:giptv_flutter/app/widgets/inkwell_button.dart';
-import 'package:giptv_flutter/domain/entities/entity_channel.dart';
-import 'package:giptv_flutter/domain/entities/entity_fav_channel.dart';
-import 'package:giptv_flutter/domain/entities/entity_user.dart';
-import 'package:giptv_flutter/domain/providers/provider_api_interactions.dart';
-import 'package:giptv_flutter/misc/app_colors.dart';
+import 'package:flutter_iptv/app/screens/screen_base.dart';
+import 'package:flutter_iptv/app/widgets/inkwell_button.dart';
+import 'package:flutter_iptv/domain/entities/entity_channel.dart';
+import 'package:flutter_iptv/domain/entities/entity_fav_channel.dart';
+import 'package:flutter_iptv/domain/entities/entity_user.dart';
+import 'package:flutter_iptv/domain/providers/provider_api_interactions.dart';
+import 'package:flutter_iptv/misc/app_colors.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 

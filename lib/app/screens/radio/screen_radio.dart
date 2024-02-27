@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:giptv_flutter/app/screens/screen_base.dart';
-import 'package:giptv_flutter/domain/entities/entity_radio_station.dart';
-import 'package:giptv_flutter/misc/app_colors.dart';
+import 'package:flutter_iptv/app/screens/screen_base.dart';
+import 'package:flutter_iptv/domain/entities/entity_radio_station.dart';
+import 'package:flutter_iptv/misc/app_colors.dart';
 import 'package:video_player/video_player.dart';
 
 class ScreenRadio extends StatefulWidget {

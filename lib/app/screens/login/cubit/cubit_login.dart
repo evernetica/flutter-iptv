@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:giptv_flutter/app/screens/login/cubit/state_login.dart';
+import 'package:flutter_iptv/app/screens/login/cubit/state_login.dart';
 
 class CubitLogin extends Cubit<StateLogin> {
   CubitLogin() : super(const StateLogin());

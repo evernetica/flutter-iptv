@@ -1,9 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:giptv_flutter/app/dashboard/cubit/state_dashboard.dart';
-import 'package:giptv_flutter/domain/entities/entity_channel.dart';
-import 'package:giptv_flutter/domain/entities/entity_fav_channel.dart';
-import 'package:giptv_flutter/domain/entities/entity_radio_station.dart';
-import 'package:giptv_flutter/domain/entities/entity_user.dart';
+import 'package:flutter_iptv/app/dashboard/cubit/state_dashboard.dart';
+import 'package:flutter_iptv/domain/entities/entity_channel.dart';
+import 'package:flutter_iptv/domain/entities/entity_fav_channel.dart';
+import 'package:flutter_iptv/domain/entities/entity_radio_station.dart';
+import 'package:flutter_iptv/domain/entities/entity_user.dart';
 
 class CubitDashboard extends Cubit<StateDashboard> {
   CubitDashboard() : super(const StateDashboard());

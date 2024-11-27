@@ -3,9 +3,9 @@
 Example app showing possible layout of a streaming app. The same APK works on phones, tablets and Android TV devices
 
 ## App preview:
-![307932438-d437ab9f-b47b-4934-9873-222f3d233598](https://github.com/user-attachments/assets/da04c991-fdf6-4650-8837-ea66cb2ad8ba)
+<img src="https://github.com/user-attachments/assets/62bb2d9e-7496-4618-a2af-293f52ccbfd3" height="360"/>
 
-<img src="https://github.com/mobtophop/flutter-tv-example/assets/145994644/1d7e8958-1334-4840-8b49-9aff8f0d1cd6" height="360" width="220"/>
+<img src="https://github.com/user-attachments/assets/36900f88-c192-4baf-a214-bffec0386eda" height="360" width="220"/>
 
 ## APK file:
 <a href="https://drive.google.com/file/d/1xoAy3_gLN_LS0MbvE_1UBaU9AfT5_TTF/view?usp=sharing">Google Drive link here!</a>

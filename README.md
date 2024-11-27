@@ -3,7 +3,7 @@
 Example app showing possible layout of a streaming app. The same APK works on phones, tablets and Android TV devices
 
 ## App preview:
-<img src="https://github.com/mobtophop/flutter-tv-example/assets/145994644/d437ab9f-b47b-4934-9873-222f3d233598" height="360"/>
+![Uploading 307932438-d437ab9f-b47b-4934-9873-222f3d233598.gif…]()
 
 <img src="https://github.com/mobtophop/flutter-tv-example/assets/145994644/1d7e8958-1334-4840-8b49-9aff8f0d1cd6" height="360" width="220"/>
 
